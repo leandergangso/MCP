@@ -1,4 +1,4 @@
-# MCP
+# Manage and Create Projects
 ## Features:
 - Setup new project environments.
 - Add and create new repo's on github.
