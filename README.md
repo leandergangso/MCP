@@ -13,6 +13,6 @@
   - make sure that you use the scopes: **repo, delete_repo
 - Add environment veriable: `MCP_PATH=(full path to the MCP folder)`
 - Add `source mcp_auto.bash` to the config file that runs on terminal startup.
-- Python and pip need to be installed
-- Type `pip install virtualenv` in a terminal.
+- Python and pip needs to be installed
+  - Type `pip install virtualenv` in a terminal.
 - Type: `mcp help` in a terminal for usage information.
