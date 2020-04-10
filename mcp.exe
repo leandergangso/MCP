@@ -4,7 +4,7 @@
 # Control
 # Projects
 mcp(){
-	# SETTINGS:
+	# ENVIRONMENT VERIABLES:
 	#--------------------------------------------------------------#
 	# full path to mcp folder
 	path_mcp="$MCP_PATH"
@@ -13,42 +13,6 @@ mcp(){
 	# github password or token (token is recommended(need the scopes: repo, delete_repo))
 	github_auth="$GITHUB_AUTH"
 	#--------------------------------------------------------------#
-
-	# FUNCTIONALITY:
-	# ------------------------------------ #
-		# create project folder
-		# connect folder to github
-		# clone your own repos from github to folder
-		# get a list of your repos
-		# toggle repo visibility
-		# change repo description
-		# setup virtualenv for folder
-		# set git protocol to https or ssh (se info bellow)
-	# ------------------------------------ #
-
-	# SETUP INFO:
-	# ----------- #
-	# PATHS:
-		# for this command to work within you terminal, you need to add the location of this file to the PATH.
-	# ENVIRNMENT VERIABLE:
-		# you will need to add two environemnt veriables to your system for this to work, see settings above.
-		# if you dont know how to do this, a quick google search will solve that.'
-	# VIRTUAL ENV:
-		# the package 'virtualenv' is used, and is needed for some of the functionality to work.
-		# environments will be automatically activated when entering the folder, and deactivated when leaving the folder.
-		# all environments will be called the same: ('.env').
-	# GITHUB:
-		# ssh setup (recommended):
-			# you will need to have an ssh key for this to work, this can be created with the command ssh-keygen(see link bellow).
-			# remember to add public key to: github.com -> settings -> SSH 
-			# ssh guide: https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
-		# https setup:
-			# github password or token (get a token here: github.com -> settings -> developer settings -> personal access token. Remember to add the scopes: repo and delete_repo)
-			# Note: you will need to give username and password when using git commands.
-
-	#--------------------------------------------------#
-	# YOU ARE READY IF YOU HAVE THE REQUIREMENTS ABOVE #
-	#--------------------------------------------------#
 
 	# syntax info
 	usage="""usage: $FUNCNAME [help] [repo <name>] [repolist] [repodesc <name> <'description'>] [delrepo <name>]

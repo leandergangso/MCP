@@ -1,11 +1,10 @@
 # MCP
 ## Features:
-- Setup new project environment with out without github.
-- Create a new repo on github.
-- Clone your own repos to yout machine.
+- Setup new project environments.
+- Add and create new repo's on github.
 - Clone any repo with reponame and username.
 - Setup virtualenv on any folder.
-- Create local environment veriables only for choosen environment.
+- Add environment veriables for choosen folder(env).
 ## Steps to setup MCP:
 - Add the MCP folder to the PATH.
 - Add environment veriable: GITHUB_USERNAME=(github username).
