@@ -53,7 +53,7 @@ mcp(){
 	# syntax info
 	usage="""usage: $FUNCNAME [help] [repo <name>] [repolist] [repodesc <name> <'description'>] [delrepo <name>]
 	   [env <name> <value>] [autoenv] [status] [veriables] [delveriable <name>]
-	   [-g|-c|-v] [-g|-v <name>] [-d <'description'>]
+	   [-g|-v] [-g|-v <name>] [-c <reponame>] [-c <reponame> <username>] [-d <'description'>]
 	"""
 
 	# default values
@@ -73,7 +73,6 @@ mcp(){
 		# guidance info
 		echo "$FUNCNAME: missing arguments."
 		echo "Try '$FUNCNAME help' for usage information."
-
 		# Operation not permitted
 		exit 1
 	fi
@@ -111,8 +110,8 @@ mcp(){
 		echo "    Cloning existing repo and setting up ssh protocol and virtualenv wihtout autoenv"
 		echo "    -cva name"
 		echo ""
-		echo "    Creating new project with virtualenv"
-		echo "    -v name"
+		echo "    Clone someones repo with https"
+		echo "    -ch reponame username"
 		echo ""
 		echo "PS: If no name is given, the options will apply to the current folder."		
 
@@ -232,13 +231,13 @@ mcp(){
 
 	# command: c (h,v(a))
 	if [[ $git_clone == true ]] ; then
-		# standardize name
-		name=${1//[' ']/-}
 		# go to python script
 		cd "$path_mcp"
-		# check if repo exist
-		python mcp-api.py "cloneRepo" "$github_username" "$github_auth" "$name"
-		ec="$?"
+		# check for local repo
+		[[ $2 == '' ]] &&
+		# check if local repo exist
+		python mcp-api.py "cloneRepo" "$github_username" "$github_auth" "$name" &&
+		ec="$?" &&
 		if [[ $ec == '0' ]] ; then
 			# check if folder exist
 			checkFolder "$name"
@@ -248,6 +247,10 @@ mcp(){
 			# repo dosent exist
 			exit 1
 		fi
+		# get external repo (https or ssh)
+		cd "$path_current"
+		[[ $git_https == true ]] && git clone https://github.com/"$2"/"$name".git ||
+		git clone git@github.com:"$2"/"$name".git
 	fi
 
 	# command: v (a)
