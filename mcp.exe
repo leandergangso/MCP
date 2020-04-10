@@ -1,0 +1,677 @@
+#!/usr/bin/bash
+
+# Manage
+# Control
+# Projects
+mcp(){
+	# SETTINGS:
+	#--------------------------------------------------------------#
+	# full path to mcp folder
+	path_mcp="$MCP_PATH"
+	# github username
+	github_username="$GITHUB_USERNAME"
+	# github password or token (token is recommended(need the scopes: repo, delete_repo))
+	github_auth="$GITHUB_AUTH"
+	#--------------------------------------------------------------#
+
+	# FUNCTIONALITY:
+	# ------------------------------------ #
+		# create project folder
+		# connect folder to github
+		# clone your own repos from github to folder
+		# get a list of your repos
+		# toggle repo visibility
+		# change repo description
+		# setup virtualenv for folder
+		# set git protocol to https or ssh (se info bellow)
+	# ------------------------------------ #
+
+	# SETUP INFO:
+	# ----------- #
+	# PATHS:
+		# for this command to work within you terminal, you need to add the location of this file to the PATH.
+	# ENVIRNMENT VERIABLE:
+		# you will need to add two environemnt veriables to your system for this to work, see settings above.
+		# if you dont know how to do this, a quick google search will solve that.'
+	# VIRTUAL ENV:
+		# the package 'virtualenv' is used, and is needed for some of the functionality to work.
+		# environments will be automatically activated when entering the folder, and deactivated when leaving the folder.
+		# all environments will be called the same: ('.env').
+	# GITHUB:
+		# ssh setup (recommended):
+			# you will need to have an ssh key for this to work, this can be created with the command ssh-keygen(see link bellow).
+			# remember to add public key to: github.com -> settings -> SSH 
+			# ssh guide: https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+		# https setup:
+			# github password or token (get a token here: github.com -> settings -> developer settings -> personal access token. Remember to add the scopes: repo and delete_repo)
+			# Note: you will need to give username and password when using git commands.
+
+	#--------------------------------------------------#
+	# YOU ARE READY IF YOU HAVE THE REQUIREMENTS ABOVE #
+	#--------------------------------------------------#
+
+	# syntax info
+	usage="""usage: $FUNCNAME [help] [repo <name>] [repolist] [repodesc <name> <'description'>] [delrepo <name>]
+	   [env <name> <value>] [autoenv] [status] [veriables] [delveriable <name>]
+	   [-g|-c|-v] [-g|-v <name>] [-d <'description'>]
+	"""
+
+	# default values
+	git_desc='No description was added.'
+	git_private=true
+	git_https=false
+	path_current="$PWD"
+	env_autoenv=true
+	env_name='.env'	
+
+	#-----------#
+	# USER HELP #
+	#-----------#
+
+	# command: BLANK
+	if [[ $1 == '' ]] ; then
+		# guidance info
+		echo "$FUNCNAME: missing arguments."
+		echo "Try '$FUNCNAME help' for usage information."
+
+		# Operation not permitted
+		exit 1
+	fi
+
+	# command: help
+	if [[ $1 == 'help' ]] ; then
+		echo "$usage"
+		echo "Commands:"
+		echo "    repo 	 Toggle the visibility of given repo."
+		echo "    repolist	 Get a list of all repo's."
+		echo "    repodesc	 Change the description for given repo."
+		echo "    delrepo	 Delete a repo from github."
+		echo "    env		 Create local environment veriable(only works for current env)."
+		echo "    autoenv	 Toggle automatic environment activation."
+		echo "    status	 The current status of the current dir."
+		echo "    veriables	 Get a list of all local environment veriables."
+		echo "    delveriable	 Delete a local environment veriable."
+		echo ""
+		echo "Options:"	
+		echo "    -g	Setup a new repository on github."
+		echo "        -d	Set a description on new project. (default '"$git_desc"')"
+		echo "        -p	Make repo public on new project. (default private)"
+		echo "        -h	Use https to connect to github. (default SSH)"
+		echo ""
+		echo "    -c	Clone existing repo from github."
+		echo "        -h	Use https to connect to github. (default SSH)"
+		echo ""
+		echo "    -v	Setup virtuelenv."
+		echo "        -a	Disable automatic activate (default enabled)."
+		echo ""
+		echo "Eksamples:"
+		echo "    Creating new project with: github, https protocol, public repo, virtualenv and description"
+		echo "    -ghpv name -d 'description'"
+		echo ""
+		echo "    Cloning existing repo and setting up ssh protocol and virtualenv wihtout autoenv"
+		echo "    -cva name"
+		echo ""
+		echo "    Creating new project with virtualenv"
+		echo "    -v name"
+		echo ""
+		echo "PS: If no name is given, the options will apply to the current folder."		
+
+		# Success
+		exit 0
+	fi
+
+	#---------------#
+	# USER COMMANDS #
+	#---------------#
+
+	# commands: veriables, status, repolist, autoenv
+	case $@ in
+		'veriables') veriableList;;
+		'status') folderStatus;;
+		'repolist') getRepo;;
+		'autoenv') toggleEnv;;
+	esac
+	# command: delveriable
+	[[ $1 == 'delveriable' ]] && veriableDelete "$@"
+	# command: repo
+	[[ $1 == 'repo' ]] && toggleRepo "$@"
+	# command: description
+	[[ $1 == 'repodesc' ]] && descRepo "$@"
+	# command: delrepo
+	[[ $1 == 'delrepo' ]] && deleteRepo "$@"
+	# command: env
+	[[ $1 == 'env' ]] && envVeriable "$@"
+	
+	#----------------#
+	# USER ARGUMENTS #
+	#----------------#
+	
+	# set silent alerts and valid options
+	while getopts ":acd:ghpv" option ; do
+		case "$option" in
+			# do not use autoenv
+			a) env_autoenv=false
+			;;
+			# clone repo
+			c) git_clone=true; group_git=true
+			;;
+			# add description
+			d) git_desc="$OPTARG"; group_ext=true
+			;;
+			# create github repo
+			g) git_create=true; group_git=true
+			;;
+			# https protocol
+			h) git_https=true
+			;;
+			# public repo
+			p) git_private=false; group_ext=true
+			;;
+			# setup env
+			v) env_virtual=true
+			;;
+			# handle option argument
+			:) printf "missing argument for -'%s'.\n" "$OPTARG"
+				echo "$usage"
+				# Operation not permitted
+				exit 1
+			;;
+			# handle unknown option
+			\?) printf "unknown option: -'%s'.\n" "$OPTARG"
+				echo "$usage"
+				# Operation not permitted
+				exit 1
+			;;
+		esac
+	done
+	# options handeling
+	optionHandeling $@
+	# remove options from $@
+	shift $((OPTIND - 1))
+	# argument handeling
+	# argumentHandeling $@
+
+	# set name (given input or current folder name)
+	if [[ $1 != '' ]] ; then
+		# set name from argument
+		name="${1//[' ','_']/-}"
+	else
+		# set name to current folder name
+		IFS='/' # set split key
+		read -ra name <<< "$PWD" # split PWD
+		name="${name[-1]//[' ','_']/-}" # standarize and set last foldername
+	fi
+
+	#-----------------#
+	# COMMAND MANAGER #
+	#-----------------#
+
+	# command: g (d,h,p,v(a))
+	if [[ $git_create = true ]] ; then
+		# check file avaiability if new folder will be made
+		[[ $1 != '' ]] && checkFolder
+		# go to script folder
+		cd "$path_mcp"
+		# create new repo (method, username, auth, name, desc, visibility)
+		python mcp-api.py "createRepo" "$github_username" "$github_auth" "$name" "$git_desc" "$git_private"
+		# error code
+		ec="$?"
+		# if success
+		if [[ $ec == '0' ]] ; then
+			# go to current path
+			cd "$path_current"
+			# create new project folder if name is given
+			[[ $1 != '' ]] && createFolder && cd "$name"
+			# add git to folder
+			setupGit
+		else
+			# repo name already exist / error
+			exit 1
+		fi
+	fi
+
+	# command: c (h,v(a))
+	if [[ $git_clone == true ]] ; then
+		# standardize name
+		name=${1//[' ']/-}
+		# go to python script
+		cd "$path_mcp"
+		# check if repo exist
+		python mcp-api.py "cloneRepo" "$github_username" "$github_auth" "$name"
+		ec="$?"
+		if [[ $ec == '0' ]] ; then
+			# check if folder exist
+			checkFolder "$name"
+			# get the repo
+			cloneGit
+		else
+			# repo dosent exist
+			exit 1
+		fi
+	fi
+
+	# command: v (a)
+	if [[ $env_virtual == true ]] ; then
+		# go to current dir 
+		cd "$path_current"
+		# check for new github project
+		if [[ $group_git == true ]] && [[ $1 != '' ]] ; then
+			cd "$name"
+		else
+			# check for creating new dir
+			if [[ $1 != '' ]] ; then
+				createFolder && cd "$name"
+			fi
+		fi
+		# setup virtualenv
+		setupEnv
+	fi
+}
+
+#---------------#
+# MANAGE FOLDER #
+#---------------#
+
+# check if a folder exist
+checkFolder(){
+	# go to project folder
+	cd "$path_current"
+	# compare to lowercase folder names
+	[[ $(tr "[:upper:]" "[:lower:]" <<< "$(ls -a)") =~ $(tr "[:upper:]" "[:lower:]" <<< "$name") ]] &&
+	echo 'error, folder already exist' &&
+	exit 1
+}
+
+# create a new folder inside project folder
+createFolder(){
+	# check for existing folder
+	checkFolder
+	# create new folder
+	mkdir "$name" &&
+	echo 'created new folder' || (
+	echo 'error, failed to create folder.' &&
+	# exit script
+	exit 1 )
+}
+
+#---------------#
+# MANAGE GITHUB #
+#---------------#
+
+# setup git
+setupGit(){
+	echo 'setting up git...'
+	# create default files
+	[[ ! -a 'README.md' ]] &&
+	echo $"# $name" > README.md
+	[[ ! -a '.gitignore' ]] &&
+	echo $'__pycache__\n'$env_name$'\n*.log\n*.txt' > .gitignore
+	# choose protocol
+	protocol
+	# git commands
+	git init
+	git add .
+	git commit -m "Initial commit"
+	git remote add origin "$url"
+	git push -u origin master
+	echo 'git initialized'
+}
+
+# setup cloned repo
+cloneGit(){
+	echo 'cloning repo...'
+	# go to current dir
+	cd "$path_current"
+	# choose protocol
+	protocol
+	# git commands
+	git clone $url
+	echo 'repo is downloaded'
+}
+
+# get protocol
+protocol(){
+	# choose protocol
+	if [[ $git_https == true ]] ; then
+		echo 'using https'
+		url="https://github.com/"$github_username"/"$name".git"
+	else
+		echo 'using ssh'
+		url="git@github.com:"$github_username"/"$name".git"
+		# testing ssh connection
+		ssh -q git@github.com
+		if [[ $? == '255' ]] ; then
+			echo 'error, ssh it not connected to github.'
+			exit 255
+		fi
+	fi
+}
+
+# get all repo's
+getRepo(){
+	# go to python script
+	cd "$path_mcp"
+	# get repo list from api (method, username, auth)
+	python mcp-api.py "repoList" "$github_username" "$github_auth"
+	# Success
+	exit 0
+}
+
+# add/change repo description
+descRepo(){
+	# error check
+	[[ $# != 3 ]] && echo 'error, need name and description.' && echo "$usage" && exit 1
+	# go to python script
+	cd "$path_mcp"
+	# run python
+	python mcp-api.py "descRepo" "$github_username" "$github_auth" "$2" "$3"
+	# Success
+	exit 0
+}
+
+# delete given repo
+deleteRepo(){
+	# error check
+	[[ $# != 2 ]] && echo 'error, need repo name.' && echo "$usage" && exit 1
+	# go to python script
+	cd "$path_mcp"
+	# user comfirm
+	read -p "about to delete: '$2', continue? [y,n] " yn
+	case $yn in
+		[Yy] ) python mcp-api.py "delRepo" "$github_username" "$github_auth" "$2";;
+		[Nn] ) exit 0;;
+		* ) exit 0;;
+	esac
+	# Success
+	exit 0
+}
+
+# toggle repo visibility
+toggleRepo(){
+	# error check
+	[[ $# != 2 ]] && echo 'error, need repo name.' && echo "$usage" && exit 1
+	# go to python script
+	cd "$path_mcp"
+	# toggle visibility (method, username, auth, reponame)
+	python mcp-api.py "gitVisibility" "$github_username" "$github_auth" "$2"
+	# dynamic exit
+	exit $?
+}
+
+#--------------------#
+# MANAGE ENVIRONMENT #
+#--------------------#
+
+# find env folder, when env is activated
+findEnv(){
+	# go to current dir
+	cd $path_current
+
+	# find env by backtracking
+	for i in {1..10} ; do
+		# check path
+		if [[ -a "$env_name/Scripts" ]]; then
+			# goto file
+			cd $env_name"/Scripts/"
+			# found path
+			break
+		else
+			# go out of current folder
+			cd ..
+		fi
+		# file not found
+		[[ $i == 10 ]] && echo "error, didn't find: "$env_name"/Scripts/" && exit 1
+	done
+}
+
+# setup new env veriable
+envVeriable(){
+	# error check
+	[[ $# != 3 ]] && echo 'error, needs two arguments.' && echo "$usage" && exit 1
+
+	echo 'adding new environment veriable...'
+
+	# ENV is activate
+	if [[ -z "$VIRTUAL_ENV" ]]; then
+		echo 'error, env needs to be activated.'
+		exit 1
+	fi
+
+	# find env folder
+	findEnv
+
+	# init files for current folder
+	if [ ! -f 'activate.bak' ]; then
+		echo 'first time setup...'
+		# make log file
+		touch custom_veriables &&
+		# make bakup
+		cp activate activate.bak &&
+		# make nr.2 of activate file
+		cp activate activate2 &&
+		# add info to activate
+		awk $'/export VIRTUAL/ { print; print "# >>>> MY CUSTOM EXPORT <<<<\\n# >>>> END <<<<"; next }1' activate2 > activate &&
+		# save changes to activate2
+		cat activate > activate2 &&		
+		# add info to activate
+		awk $'/unset VIRTUAL/ { print; print "    # >>>> MY CUSTOM UNSET <<<<\\n    # >>>> END <<<<"; next }1' activate2 > activate &&
+		# save to .bak
+		cat activate > activate.bak &&
+		# delete activate2
+		rm -f activate2 &&
+		# feedback
+		echo 'setup complete' ||
+		# error
+		( echo 'error, something went wrong.' && exit 1 )
+	fi
+
+	# check for invalid space input
+	[[ $2 == *" "* ]] && echo "error, can't use spaces." && exit 1
+	[[ $3 == *" "* ]] && echo "error, can't use spaces." && exit 1
+
+	# check for unique ENV name
+	if ! printenv | grep -qw "$1" && ! cat custom_veriables | grep -qw "$1" ; then
+		# copy file
+		cat activate > activate2 &&
+		# add export
+		awk $'/CUSTOM EXPORT/ { print; print "export '$1'='$2'"; next }1' activate2 > activate &&
+		# update activate2
+		cat activate > activate2 &&
+		# add unset
+		awk $'/CUSTOM UNSET/ { print; print "    unset '$1'"; next }1' activate2 > activate &&
+		# add veriables to log
+		echo "$1=$2" >> custom_veriables &&
+		# update .bak
+		cat activate > activate.bak &&
+		# restore file on error
+		echo 'added successfully' && echo 'IMPORTANT: re-activate env for veriable to init.' || ( echo 'data may have been lost, type: "mcp veriables" to check.' && cat activate.bak > activate )
+
+		# delete activate2
+		rm -f activate2
+
+		# Success
+		exit 0
+	else
+		echo 'ops, environment name already exists.'
+		exit 1
+	fi
+}
+
+# get environment veriables
+veriableList(){
+	echo $'Local veriables:'
+	# ENV is activate
+	if [[ -z "$VIRTUAL_ENV" ]]; then
+		echo 'error, env needs to be activated.'
+		exit 1
+	fi
+	# find file
+	findEnv
+	# check if file in not empty and read
+	[[ -s custom_veriables ]] && cat custom_veriables ||
+	echo 'no veriables added.'
+}
+
+# delete environment veraible
+veriableDelete(){
+	# error check
+	[[ $# == 1 ]] && echo 'error, need at least one argument.' && echo "$usage" && exit 1
+	echo 'deleting environment veriable...'
+	# ENV is activate
+	if [[ -z "$VIRTUAL_ENV" ]]; then
+		echo 'error, env needs to be activated.'
+		exit 1
+	fi
+	# find env folder
+	findEnv
+	# check for file
+	[[ ! -a custom_veriables ]] && echo 'No environment veriables has been set.' && exit 1
+	# delete all arguments
+	for i in ${@:2} ; do
+		# check if veriable exist
+		! cat custom_veriables | grep -q $i && echo 'error, veriable "'$i'" was not set.'
+		# delete line from activate
+		sed -i "/unset $i\b/d" activate &&
+		sed -i "/export $i\b/d" activate &&
+		# update activate.bak
+		cat activate > activate.bak &&
+		# delete line from log file
+		sed -i "/^$i\b/d" custom_veriables &&
+		sed -i "/^$i\b/d" custom_veriables &&
+		echo "deleted: $i" ||
+		echo "error, wasen't able to delete the veriable."
+	done
+	# note
+	echo 'IMPORTANT: deactivate env for veriable to unset.'
+}
+
+# setup new env
+setupEnv(){
+	echo 'setting up environment...'
+	# setup env
+	virtualenv $env_name
+	# check for autoenv
+	[[ $env_autoenv == true ]] &&
+	cd "$env_name/Scripts" &&
+	echo 'this file is used as a key to activate the environment.' > autoenv
+}
+
+# toggle autoenv
+toggleEnv(){
+	# check if .env is available
+	findEnv
+	# check if autoenv file exists
+	[[ -a 'autoenv' ]] && rm -f 'autoenv' && echo 'autoenv is disabled' ||
+	( echo 'this file is used as a key to activate the environment.' > autoenv && echo 'autoenv is enabled' )
+	# Success
+	exit 0
+}
+
+#---------------#
+# FOLDER STATUS #
+#---------------#
+
+# get folder status				
+folderStatus(){
+	# go to current dir
+	cd $path_current
+
+	echo 'Folder status:' && fstatus=true
+
+	# find env by backtracking
+	for i in {1..10} ; do
+		# look for folders
+		[[ -d '.git' ]] && echo '  - git is added.' && fstatus=false
+		[[ -d "$env_name" ]] && echo '  - env is added.' && fstatus=false && env=true
+		[[ -a '.env/Scripts/autoenv' ]] && echo '  - autoenv is enabled.' || ( [[ $env == true ]] && echo '  - autoenv is disabled.' ) &&
+		# exit
+		break ||
+		# go out of current folder
+		cd ..
+
+		# file not found
+		[[ $i == 10 ]] && [[ $fstatus == true ]] && echo '  - just a normal folder.'
+	done
+
+
+	# echo 'Folder status:' && fstatus=true
+	# check if .git file is created
+	# [[ -d '.git' ]] && echo '  - git is added.' && fstatus=false
+	# check if .env file is created
+	# [[ -d "$env_name" ]] && echo '  - env is added.' && fstatus=false && env=true
+	# check autoenv
+	# [[ -a '.env/Scripts/autoenv' ]] && echo '  - autoenv is enabled.' || ( [[ $env == true ]] && echo '  - autoenv is disabled.' )
+	# any of the above true?
+	# [[ $fstatus == true ]] && echo '  - just a normal folder.'
+
+	# create file from echo, get file content into veriable, del file, echo veriable
+	# echo $'hei du\ntest' > .status_read_file
+	# test=$(<.status_read_file)
+	# rm -f .status_read_file
+	# echo "$test"
+}
+
+#-----------------#
+# ERROR HANDELING #
+#-----------------#
+
+# check and send input error
+optionHandeling(){
+	# cant use -g and -c at the same time
+	[[ $git_create == true ]] && [[ $git_clone == true ]] &&
+	echo "error, can't use both -g and -c" &&
+	echo "$usage" &&
+	# Operation not permitted
+	exit 1
+	
+	# need to use -g to be able to use -d or -p
+	[[ $group_ext == true ]] && [[ $git_create != true ]] &&
+	echo "error, can't use -d or -p without -g" &&
+	echo "$usage" &&
+	# Operation not permitted
+	exit 1
+
+	# need -g or -c for -h to work
+	[[ $git_https == true ]] && [[ $group_git != true ]] &&
+	echo "error, can't use -h without -g or -c" &&
+	echo "$usage" &&
+	# Operation not permitted
+	exit 1
+
+	# need -v for -a to work
+	[[ $env_autoenv == false ]] && [[ $env_virtual != true ]] &&
+	echo "error, can't use -a without -v" &&
+	echo "$usage" &&
+	# Operation not permitted
+	exit 1
+}
+
+# check and send input error
+# argumentHandeling(){
+	# # missing argument
+	# if [[ $group_env == true ]] && [[ $1 == '' ]] ; then
+	# 	echo "missing value argument for -e."
+	# 	echo "$usage"
+	# 	# Operation not permitted
+	# 	exit 1
+	# fi
+	# # unused argument
+	# if [[ $group_env != true ]] && [[ $2 != '' ]] ; then
+	# 	printf "error, '%s' is not a valid argument. \n" "$2"
+	# 	echo "$usage"
+	# 	# Operation not permitted
+	# 	exit 1
+	# fi
+	# if ([[ $group_env == true ]] && [[ $1 != '' ]] && [[ $2 == '' ]]) || ([[ $group_env == true ]] && [[ $3 != '' ]]) ; then
+	# 	printf "error, '%s' is not a valid argument. \n" "$3"
+	# 	echo "$usage"
+	# 	# Operation not permitted
+	# 	exit 1
+	# fi
+# }
+
+#------------------#
+# START THE SCRIPT #
+#------------------#
+
+mcp "$@"
