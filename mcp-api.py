@@ -10,7 +10,6 @@ import os
 def selector(arg):
     switch = {
         'createRepo': createRepo,
-        'cloneRepo': cloneRepo,
         'delRepo': delRepo,
         'descRepo': descRepo,
         'repoList': repoList,
@@ -84,20 +83,6 @@ def createRepo():
         sys.exit(0)
     else:
         print(r.json()['message'])
-        sys.exit(1)
-
-# check for valid repo name
-def cloneRepo():
-    print('checking existing repos...')
-    # confirm repo
-    if _confirmRepo():
-        # user info
-        print('repo found')
-        # return valid repo
-        sys.exit(0)
-    else:
-        print('no repo exist with the name:',arg_list[3])
-        # return invalid repo
         sys.exit(1)
 
 # delete repo from github
