@@ -10,31 +10,13 @@ cd() {
 		# if no arguments are given
 		[[ $@ == '' ]] && return
 		# if im going back
-		[[ $@ == *'..'* ]] && return
-		# when im not in project folder
-		[[ $PWD != *'MyProjects/'* ]] && return
+		[[ $@ == '..' ]] && return
 		
-		# set current path
-		local folder="$PWD"
-		# split input
-		local input
-		IFS='/' read -ra input <<< "$@"
-
-		# backtrack to find existing .env folder
-		for i in ${input[@]}; do
-			## activate when going INTO a folder with venv
-			if [[ -d "$folder/.env/" ]] ; then
-				# autoenv enabled?
-				[[ -a "$folder/.env/Scripts/autoenv" ]] &&
-				source "$folder/.env/Scripts/activate" &&
-				autoenv_path="$folder"
-				# quit
-				break
-			else
-				# backtrack - remove last /*
-				local folder="$(echo "$folder" | sed 's|\(.*\)/.*|\1|')"
-			fi
-		done
+		## activate when going INTO a folder with venv
+		if [[ -a "$PWD/.env/Scripts/autoenv" ]]; then
+			source "$PWD/.env/Scripts/activate" &&
+			autoenv_path="$PWD"
+		fi
 	else
 		## deactivate when going to a higher lvl than the env folder
 		if [[ "$PWD" != *"$autoenv_path"* ]] ; then
