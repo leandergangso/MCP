@@ -10,7 +10,7 @@ mcp(){
 	path_mcp="$MCP_PATH"
 	# github username
 	github_username="$GITHUB_USERNAME"
-	# github password or token (token is recommended(need the scopes: repo, delete_repo))
+	# github password or token
 	github_auth="$GITHUB_AUTH"
 	#--------------------------------------------------------------#
 
