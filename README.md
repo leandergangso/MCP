@@ -15,5 +15,4 @@
 - Add environment veriable: MCP_PATH=(full path to the MCP folder).
 - Add "source mcp_auto.bash" to the config file that runs on terminal startup.
 - Type "pip install virtualenv" in a terminal. (requires pip already installed)
-  
 - Type: 'mcp help', for usage information.
