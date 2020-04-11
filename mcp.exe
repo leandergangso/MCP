@@ -565,7 +565,7 @@ folderStatus(){
 optionHandeling(){
 	# Unknown command
 	[[ $1 != '-'* ]] &&
-	echo "unknown command: '${1:1}'" &&
+	echo "unknown command: '${1}'" &&
 	echo "$usage" &&
 	# Operation not permitted
 	exit 1
