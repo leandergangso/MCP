@@ -234,7 +234,7 @@ checkFolder(){
 	# go to project folder
 	cd "$path_current"
 	# compare to lowercase folder names
-	[[ $(tr "[:upper:]" "[:lower:]" <<< "$(ls -a)") =~ $(tr "[:upper:]" "[:lower:]" <<< "$name") ]] &&
+	[[ -a "$name" ]] &&
 	echo 'error, folder already exist' &&
 	exit 1
 }
@@ -601,6 +601,7 @@ optionHandeling(){
 
 # check and send input error
 argumentHandeling(){
+	echo "all values: $@"
 	# to many arg for -g
 	[[ $git_create == true ]] && [[ $2 != '' ]] &&
 	echo "error, to many arguments. \n" &&
@@ -612,13 +613,15 @@ argumentHandeling(){
 	[[ $git_clone == true ]] && [[ $3 != '' ]] &&
 	echo "error, to many arguments." &&
 	echo "$usage" &&
+	# Operation not permitted
 	exit 1
 
-	# ([[ $group_env == true ]] && [[ $1 != '' ]] && [[ $2 == '' ]]) || ([[ $group_env == true ]] && [[ $3 != '' ]])  &&
-	# echo "error, '$3' is not a valid argument. \n" &&
-	# echo "$usage" &&
-	# # Operation not permitted
-	# exit 1
+	# to many arg for -v
+	[[ $env_virtual == true ]] && [[ $2 != '' ]] &&
+	echo "error, to many arguments." &&
+	echo "$usage" &&
+	# Operation not permitted
+	exit 1
 }
 
 #------------------#
