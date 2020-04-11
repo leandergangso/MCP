@@ -570,7 +570,6 @@ optionHandeling(){
 	# Operation not permitted
 	exit 1
 
-
 	# invalid '--'
 	[[ $1 == '--' ]] &&
 	echo "unknown option: -'${1:1}'" &&
