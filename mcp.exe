@@ -15,9 +15,15 @@ mcp(){
 	#--------------------------------------------------------------#
 
 	# syntax info
-	usage="""usage: $FUNCNAME [help] [repo <name>] [repolist] [repodesc <name> <'description'>] [delrepo <name>]
-	   [env <name> <value>] [autoenv] [status] [veriables] [delveriable <name>]
-	   [-g|-v] [-g|-v <name>] [-c <reponame>] [-c <reponame> <username>] [-d <'description'>]
+	# usage="""usage: $FUNCNAME [help] [repo <name>] [repolist] [repodesc <name> <'description'>] [delrepo <name>]
+	#    [env <name> <value>] [autoenv] [status] [veriables] [delveriable <name>]
+	#    [-g|-v] [-g|-v <name>] [-c <reponame>] [-c <reponame> <username>] [-d <'description'> <name>]
+	# """
+
+	usage="""usage: $FUNCNAME [help] [status] [autoenv] [ver] [repolist]
+	   [-g|-v] [-g|-v <name>] [-c <reponame>] [-c <reponame> <username>] [-d <'description'> <name>]
+	   [env <name> <value>] [delver <name>] [repo <reponame>] [delrepo <reponame>]
+	   [repodesc <name> <'description'>]
 	"""
 
 	# default values
@@ -45,16 +51,16 @@ mcp(){
 	if [[ $1 == 'help' ]] ; then
 		echo "$usage"
 		echo "Commands:"
-		echo "    repo 	 Toggle the visibility of given repo."
-		echo "    repolist	 Get a list of all repo's."
-		echo "    repodesc	 Change the description for given repo."
-		echo "    delrepo	 Delete a repo from github."
-		echo "    env		 Create local environment veriable."
-		echo "    ver	 	 Get a list of all local environment veriables."
-		echo "    delver	 Delete a local environment veriable."
-		echo "    autoenv	 Toggle automatic environment activation (same as '-a' bellow)."
-		echo "    status	 The current status of the current dir."
-		echo ""
+		echo "    repo 	Toggle the visibility of given repo."
+		echo "    repolist	Get a list of all repo's."
+		echo "    repodesc	Change the description for given repo."
+		echo "    delrepo	Delete a repo from github."
+		echo "    env		Create local environment veriable."
+		echo "    ver	 	Get a list of all local environment veriables."
+		echo "    delver	Delete a local environment veriable."
+		echo "    autoenv	Toggle automatic environment activation (same as '-a' bellow)."
+		echo "    status	The current status of the current dir."
+		echo "-------------------------------------------------------------------------------"
 		echo "Options:"	
 		echo "    -g	Setup a new repository on github."
 		echo "        -d	Set a description on new project. (default '"$git_desc"')"
@@ -69,8 +75,8 @@ mcp(){
 		echo "        -a	Disable automatic activate (default enabled)."
 		echo ""
 		echo "Eks:"
-		echo "    Create new project with: github, ssh protocol, public repo, virtualenv, disable autoenv and description"
-		echo "    mcp -gpva name -d 'description'"
+		echo "    Create new project with: github(g), ssh protocol(default), public repo(p), virtualenv(v), disable autoenv(a) and description(d)"
+		echo "    mcp -gpvad 'description' name"
 		echo ""
 		echo "PS: If no <name> is given, it will use the current folder."		
 
@@ -168,6 +174,9 @@ mcp(){
 	if [[ $git_create = true ]] ; then
 		# check file avaiability if new folder will be made
 		[[ $1 != '' ]] && checkFolder
+		# check if .git exist
+		cd "$path_current"
+		[[ -a '.git' ]] && echo "error, '.git' is already in this folder." && exit 1
 		# go to script folder
 		cd "$path_mcp"
 		# create new repo (method, username, auth, name, desc, visibility)
@@ -190,9 +199,10 @@ mcp(){
 
 	# command: c (h,v(a))
 	if [[ $git_clone == true ]] ; then
-		# go to python script
-		# cd "$path_mcp"
+		# go to current folder
 		cd "$path_current"
+		# check if .git exist
+		[[ -a '.git' ]] && echo "error, '.git' is already in this folder." && exit 1
 		# check for username input
 		if [[ $2 == '' ]] ; then
 			# clone your own repos
@@ -500,6 +510,8 @@ veriableDelete(){
 # setup new env
 setupEnv(){
 	echo 'setting up environment...'
+	# check if env exists
+	[[ -a $env_name ]] && echo "error, $env_name is already in this folder." && exit 1
 	# setup env
 	virtualenv $env_name
 	# check for autoenv
@@ -574,28 +586,28 @@ optionHandeling(){
 	exit 1
 
 	# cant use -g and -c at the same time
-	[[ $git_create == true ]] && [[ $git_clone == true ]] &&
+	[[ $git_create == true && $git_clone == true ]] &&
 	echo "error, can't use both -g and -c" &&
 	echo "$usage" &&
 	# Operation not permitted
 	exit 1
 	
 	# need to use -g to be able to use -d or -p
-	[[ $group_ext == true ]] && [[ $git_create != true ]] &&
+	[[ $group_ext == true && $git_create != true ]] &&
 	echo "error, can't use -d or -p without -g" &&
 	echo "$usage" &&
 	# Operation not permitted
 	exit 1
 
 	# need -g or -c for -h to work
-	[[ $git_https == true ]] && [[ $group_git != true ]] &&
+	[[ $git_https == true && $group_git != true ]] &&
 	echo "error, can't use -h without -g or -c" &&
 	echo "$usage" &&
 	# Operation not permitted
 	exit 1
 
 	# need -v for -a to work
-	[[ $env_autoenv == false ]] && [[ $env_virtual != true ]] &&
+	[[ $env_autoenv == false && $env_virtual != true ]] &&
 	echo "error, can't use -a without -v" &&
 	echo "$usage" &&
 	# Operation not permitted
@@ -604,22 +616,15 @@ optionHandeling(){
 
 # check and send input error
 argumentHandeling(){
-	# to many arg for -g
-	[[ $git_create == true ]] && [[ $2 != '' ]] &&
-	echo "error, to many arguments. \n" &&
+	# to many arg for -g or -v
+	[[ $git_create || $env_virtual ]] && [[ $2 != '' ]] &&
+	echo "error, or to many arguments." &&
 	echo "$usage" &&
 	# Operation not permitted
 	exit 1
 
 	# to many arg for -c
-	[[ $git_clone == true ]] && [[ $3 != '' ]] &&
-	echo "error, to many arguments." &&
-	echo "$usage" &&
-	# Operation not permitted
-	exit 1
-
-	# to many arg for -v
-	[[ $env_virtual == true ]] && [[ $2 != '' ]] &&
+	[[ $git_clone ]] && [[ $3 != '' ]] &&
 	echo "error, to many arguments." &&
 	echo "$usage" &&
 	# Operation not permitted
