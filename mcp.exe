@@ -456,6 +456,9 @@ veriableList(){
 	# check if file in not empty and read
 	[[ -s custom_veriables ]] && cat custom_veriables ||
 	echo 'no veriables added.'
+
+	# Success
+	exit 0
 }
 
 # delete environment veraible
@@ -489,6 +492,9 @@ veriableDelete(){
 	done
 	# note
 	echo 'IMPORTANT: deactivate env for veriable to unset.'
+
+	# Success
+	exit 0
 }
 
 # setup new env
@@ -500,6 +506,9 @@ setupEnv(){
 	[[ $env_autoenv == true ]] &&
 	cd "$env_name/Scripts" &&
 	echo 'this file is used as a key to activate the environment.' > autoenv
+
+	# Success
+	exit 0
 }
 
 # toggle autoenv
@@ -509,6 +518,7 @@ toggleEnv(){
 	# check if autoenv file exists
 	[[ -a 'autoenv' ]] && rm -f 'autoenv' && echo 'autoenv is disabled' ||
 	( echo 'this file is used as a key to activate the environment.' > autoenv && echo 'autoenv is enabled' )
+
 	# Success
 	exit 0
 }
@@ -539,22 +549,8 @@ folderStatus(){
 		[[ $i == 10 ]] && [[ $fstatus == true ]] && echo '  - just a normal folder.'
 	done
 
-
-	# echo 'Folder status:' && fstatus=true
-	# check if .git file is created
-	# [[ -d '.git' ]] && echo '  - git is added.' && fstatus=false
-	# check if .env file is created
-	# [[ -d "$env_name" ]] && echo '  - env is added.' && fstatus=false && env=true
-	# check autoenv
-	# [[ -a '.env/Scripts/autoenv' ]] && echo '  - autoenv is enabled.' || ( [[ $env == true ]] && echo '  - autoenv is disabled.' )
-	# any of the above true?
-	# [[ $fstatus == true ]] && echo '  - just a normal folder.'
-
-	# create file from echo, get file content into veriable, del file, echo veriable
-	# echo $'hei du\ntest' > .status_read_file
-	# test=$(<.status_read_file)
-	# rm -f .status_read_file
-	# echo "$test"
+	# Success
+	exit 0
 }
 
 #-----------------#
