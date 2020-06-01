@@ -4,7 +4,7 @@
 # Control
 # Projects
 mcp(){
-	# ENVIRONMENT VERIABLES:
+	# ENVIRONMENT VARIABLES:
 	#--------------------------------------------------------------#
 	# full path to mcp folder
 	path_mcp="$MCP_PATH"
@@ -16,13 +16,13 @@ mcp(){
 
 	# syntax info
 	# usage="""usage: $FUNCNAME [help] [repo <name>] [repolist] [repodesc <name> <'description'>] [delrepo <name>]
-	#    [env <name> <value>] [autoenv] [status] [veriables] [delveriable <name>]
+	#    [env <name> <value>] [autoenv] [status] [variables] [delvariable <name>]
 	#    [-g|-v] [-g|-v <name>] [-c <reponame>] [-c <reponame> <username>] [-d <'description'> <name>]
 	# """
 
-	usage="""usage: $FUNCNAME [help] [status] [autoenv] [ver] [repolist]
+	usage="""usage: $FUNCNAME [help] [status] [autoenv] [var] [repolist]
 	   [-g|-v] [-g|-v <name>] [-c <reponame>] [-c <reponame> <username>] [-d <'description'> <name>]
-	   [env <name> <value>] [delver <name>] [repo <reponame>] [delrepo <reponame>]
+	   [env <name> <value>] [delvar <name>] [repo <reponame>] [delrepo <reponame>]
 	   [repodesc <name> <'description'>]
 	"""
 
@@ -55,9 +55,9 @@ mcp(){
 		echo "    repolist	Get a list of all repo's."
 		echo "    repodesc	Change the description for given repo."
 		echo "    delrepo	Delete a repo from github."
-		echo "    env		Create local environment veriable."
-		echo "    ver	 	Get a list of all local environment veriables."
-		echo "    delver	Delete a local environment veriable."
+		echo "    env		Create local environment variable."
+		echo "    var	 	Get a list of all local environment variables."
+		echo "    delvar	Delete a local environment variable."
 		echo "    autoenv	Toggle automatic environment activation (same as '-a' bellow)."
 		echo "    status	The current status of the current dir."
 		echo "-------------------------------------------------------------------------------"
@@ -88,15 +88,15 @@ mcp(){
 	# USER COMMANDS #
 	#---------------#
 
-	# commands: veriables, status, repolist, autoenv
+	# commands: variables, status, repolist, autoenv
 	case $@ in
-		'ver') veriableList;;
+		'var') variableList;;
 		'status') folderStatus;;
 		'repolist') getRepo;;
 		'autoenv') toggleEnv;;
 	esac
-	# command: delveriable
-	[[ $1 == 'delver' ]] && veriableDelete "$@"
+	# command: delvariable
+	[[ $1 == 'delvar' ]] && variableDelete "$@"
 	# command: repo
 	[[ $1 == 'repo' ]] && toggleRepo "$@"
 	# command: description
@@ -104,7 +104,7 @@ mcp(){
 	# command: delrepo
 	[[ $1 == 'delrepo' ]] && deleteRepo "$@"
 	# command: env
-	[[ $1 == 'env' ]] && envVeriable "$@"
+	[[ $1 == 'env' ]] && envVariable "$@"
 	
 	#----------------#
 	# USER ARGUMENTS #
@@ -307,6 +307,8 @@ protocol(){
 getRepo(){
 	# go to python script
 	cd "$path_mcp"
+	# user text
+	echo 'Github repo list:'
 	# get repo list from api (method, username, auth)
 	python mcp-api.py "repoList" "$github_username" "$github_auth"
 	# Success
@@ -380,12 +382,12 @@ findEnv(){
 	done
 }
 
-# setup new env veriable
-envVeriable(){
+# setup new env variable
+envVariable(){
 	# error check
 	[[ $# != 3 ]] && echo 'error, need name and value.' && echo "$usage" && exit 1
 
-	echo 'adding new environment veriable...'
+	echo 'adding new environment variable...'
 
 	# ENV is activate
 	if [[ -z "$VIRTUAL_ENV" ]]; then
@@ -400,7 +402,7 @@ envVeriable(){
 	if [ ! -f 'activate.bak' ]; then
 		echo 'first time setup...'
 		# make log file
-		touch custom_veriables &&
+		touch custom_variables &&
 		# make bakup
 		cp activate activate.bak &&
 		# make nr.2 of activate file
@@ -426,7 +428,7 @@ envVeriable(){
 	[[ $3 == *" "* ]] && echo "error, can't use spaces." && exit 1
 
 	# check for unique ENV name
-	if ! printenv | grep -qw "$2"= && ! cat custom_veriables | grep -qw "$2"= ; then
+	if ! printenv | grep -qw "$2"= && ! cat custom_variables | grep -qw "$2"= ; then
 		# copy file
 		cat activate > activate2 &&
 		# add export
@@ -435,12 +437,12 @@ envVeriable(){
 		cat activate > activate2 &&
 		# add unset
 		awk $'/CUSTOM UNSET/ { print; print "    unset '$2'"; next }1' activate2 > activate &&
-		# add veriables to log
-		echo "$2=$3" >> custom_veriables &&
+		# add variables to log
+		echo "$2=$3" >> custom_variables &&
 		# update .bak
 		cat activate > activate.bak &&
 		# restore file on error
-		echo 'added successfully' && echo 'IMPORTANT: re-activate env for veriable to init.' || ( echo 'data may have been lost, type: "mcp veriables" to check.' && cat activate.bak > activate )
+		echo 'added successfully' && echo 'IMPORTANT: re-activate env for variable to init.' || ( echo 'data may have been lost, type: "mcp variables" to check.' && cat activate.bak > activate )
 
 		# delete activate2
 		rm -f activate2
@@ -453,9 +455,9 @@ envVeriable(){
 	fi
 }
 
-# get environment veriables
-veriableList(){
-	echo $'Local veriables:'
+# get environment variables
+variableList(){
+	echo $'Local variables:'
 	# ENV is activate
 	if [[ -z "$VIRTUAL_ENV" ]]; then
 		echo 'error, env needs to be activated.'
@@ -464,18 +466,18 @@ veriableList(){
 	# find file
 	findEnv
 	# check if file in not empty and read
-	[[ -s custom_veriables ]] && cat custom_veriables ||
-	echo 'no veriables added.'
+	[[ -s custom_variables ]] && cat custom_variables ||
+	echo 'no variables added.'
 
 	# Success
 	exit 0
 }
 
-# delete environment veraible
-veriableDelete(){
+# delete environment varaible
+variableDelete(){
 	# error check
 	[[ $# == 1 ]] && echo 'error, need at least one argument.' && echo "$usage" && exit 1
-	echo 'deleting environment veriable...'
+	echo 'deleting environment variable...'
 	# ENV is activate
 	if [[ -z "$VIRTUAL_ENV" ]]; then
 		echo 'error, env needs to be activated.'
@@ -484,24 +486,24 @@ veriableDelete(){
 	# find env folder
 	findEnv
 	# check for file
-	[[ ! -a custom_veriables ]] && echo 'No environment veriables has been set.' && exit 1
+	[[ ! -a custom_variables ]] && echo 'No environment variables has been set.' && exit 1
 	# delete all arguments
 	for i in ${@:2} ; do
-		# check if veriable exist
-		! cat custom_veriables | grep -q $i && echo 'error, veriable "'$i'" was not set.'
+		# check if variable exist
+		! cat custom_variables | grep -q $i && echo 'error, variable "'$i'" was not set.'
 		# delete line from activate
 		sed -i "/unset $i\b/d" activate &&
 		sed -i "/export $i\b/d" activate &&
 		# update activate.bak
 		cat activate > activate.bak &&
 		# delete line from log file
-		sed -i "/^$i\b/d" custom_veriables &&
-		sed -i "/^$i\b/d" custom_veriables &&
+		sed -i "/^$i\b/d" custom_variables &&
+		sed -i "/^$i\b/d" custom_variables &&
 		echo "deleted: $i" ||
-		echo "error, wasen't able to delete the veriable."
+		echo "error, wasen't able to delete the variable."
 	done
 	# note
-	echo 'IMPORTANT: deactivate env for veriable to unset.'
+	echo 'IMPORTANT: deactivate env for variable to unset.'
 
 	# Success
 	exit 0
