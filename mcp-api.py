@@ -1,7 +1,13 @@
-import requests
-import json
-import sys
 import os
+import sys
+import json
+try:
+    import requests
+except:
+    # error message
+    print("Error, 'requests' is not installed.\nTry again after disabling active 'env', or type: `pip install requests`.")
+    # exit script
+    sys.exit(1)
 
 #--------------#
 # DEF SELECTOR #
@@ -137,7 +143,6 @@ def descRepo():
 
 # get repos from github
 def repoList():
-    print('Github repo list:')
     # get repo list
     data = _getRepo()
     # display info
