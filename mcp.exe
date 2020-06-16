@@ -15,11 +15,6 @@ mcp(){
 	#--------------------------------------------------------------#
 
 	# syntax info
-	# usage="""usage: $FUNCNAME [help] [repo <name>] [repolist] [repodesc <name> <'description'>] [delrepo <name>]
-	#    [env <name> <value>] [autoenv] [status] [variables] [delvariable <name>]
-	#    [-g|-v] [-g|-v <name>] [-c <reponame>] [-c <reponame> <username>] [-d <'description'> <name>]
-	# """
-
 	usage="""usage: $FUNCNAME [help] [status] [autoenv] [var] [repolist]
 	   [-g|-v] [-g|-v <name>] [-c <reponame>] [-c <reponame> <username>] [-d <'description'> <name>]
 	   [env <name> <value>] [delvar <name>] [repo <reponame>] [delrepo <reponame>]
