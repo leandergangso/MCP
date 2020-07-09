@@ -13,8 +13,8 @@ cd() {
 		[[ $@ == '..' ]] && return
 		
 		## activate when going INTO a folder with venv
-		if [[ -a "$PWD/.env/Scripts/autoenv" ]]; then
-			source "$PWD/.env/Scripts/activate" &&
+		if [[ -a "$PWD/.env/Scripts/autoenv" || -a '.env/bin/autoenv' ]]; then
+			source "$PWD/.env/Scripts/activate" || source "$PWD/.env/bin/activate"
 			autoenv_path="$PWD"
 		fi
 	else
@@ -38,7 +38,7 @@ activate(){
 		for i in {1..10}; do
 			## activate when going INTO a folder with venv
 			if [[ -d "$folder/.env/" ]] ; then
-				source "$folder/.env/Scripts/activate" &&
+				source "$folder/.env/Scripts/activate" || source "$folder/.env/bin/activate"
 				autoenv_path="$folder"
 				# quit
 				return
