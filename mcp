@@ -520,7 +520,7 @@ setupEnv(){
 	virtualenv $env_name
 	# check for autoenv
 	[[ $env_autoenv == true ]]
-	if [[ -a "$env_name/Scripts"]]; then
+	if [[ -a "$env_name/Scripts" ]]; then
 		cd "$env_name/Scripts"
 	else
 		cd "$env_name/bin"
