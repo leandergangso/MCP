@@ -38,7 +38,11 @@ activate(){
 		for i in {1..10}; do
 			## activate when going INTO a folder with venv
 			if [[ -d "$folder/.env/" ]] ; then
-				source "$folder/.env/Scripts/activate" || source "$folder/.env/bin/activate"
+				if [[ -a "$folder/.env/Scripts/activate" ]]; then
+					source "$folder/.env/Scripts/activate"
+				else
+					source "$folder/.env/bin/activate"
+				fi
 				autoenv_path="$folder"
 				# quit
 				return
