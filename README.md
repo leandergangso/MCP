@@ -18,6 +18,7 @@
 - Python and pip needs to be installed
   - Type `pip install virtualenv` in a terminal.
   - Type `pip install requests` in a terminal.
+- Allow for file execution: `chmod 766 mcp`
 - Type: `mcp help` in a terminal for usage information.
 
 ### Note:
