@@ -369,11 +369,18 @@ findEnv(){
 			# found path
 			break
 		else
-			# go out of current folder
-			cd ..
+			if [[ -a "$env_name/bin" ]]; then
+				# goto file
+				cd $env_name"/bin"
+				# found path
+				break
+			else
+				# go out of current folder
+				cd ..
+			fi
 		fi
 		# file not found
-		[[ $i == 10 ]] && echo "error, didn't find: "$env_name"/Scripts/" && exit 1
+		[[ $i == 10 ]] && echo "error, didn't find: "$env_name && exit 1
 	done
 }
 
@@ -513,7 +520,7 @@ setupEnv(){
 	virtualenv $env_name
 	# check for autoenv
 	[[ $env_autoenv == true ]] &&
-	cd "$env_name/Scripts" &&
+	cd "$env_name/Scripts" || cd "$env_name/bin"
 	echo 'this file is used as a key to activate the environment.' > autoenv
 
 	# Success
@@ -548,7 +555,7 @@ folderStatus(){
 		# look for folders
 		[[ -d '.git' ]] && echo '  - git is added.' && fstatus=false
 		[[ -d "$env_name" ]] && echo '  - env is added.' && fstatus=false && env=true
-		[[ -a '.env/Scripts/autoenv' ]] && echo '  - autoenv is enabled.' || ( [[ $env == true ]] && echo '  - autoenv is disabled.' ) &&
+		[[ -a '.env/Scripts/autoenv' || -a '.env/bin/autoenv' ]] && echo '  - autoenv is enabled.' || ( [[ $env == true ]] && echo '  - autoenv is disabled.' ) &&
 		# exit
 		break ||
 		# go out of current folder
