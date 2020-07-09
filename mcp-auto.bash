@@ -38,7 +38,7 @@ activate(){
 		for i in {1..10}; do
 			## activate when going INTO a folder with venv
 			if [[ -d "$folder/.env/" ]] ; then
-				if [[ -a "$folder/.env/Scripts/activate" ]]; then
+				if [[ -d "$folder/.env/Scripts" ]]; then
 					source "$folder/.env/Scripts/activate"
 				else
 					source "$folder/.env/bin/activate"
