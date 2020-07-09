@@ -519,8 +519,12 @@ setupEnv(){
 	# setup env
 	virtualenv $env_name
 	# check for autoenv
-	[[ $env_autoenv == true ]] &&
-	cd "$env_name/Scripts" || cd "$env_name/bin"
+	[[ $env_autoenv == true ]]
+	if [[ -a "$env_name/Scripts"]]; then
+		cd "$env_name/Scripts"
+	else
+		cd "$env_name/bin"
+	fi
 	echo 'this file is used as a key to activate the environment.' > autoenv
 
 	# Success
