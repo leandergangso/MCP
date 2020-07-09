@@ -24,7 +24,7 @@ def selector(arg):
     # get the case
     case = switch.get(arg, 'error')
     if case == 'error':
-        print('error, invalid case')
+        sys.stdout.write('error, invalid case\n')
     else:
         # run the case
         case()
@@ -45,7 +45,7 @@ def _getRepo():
     if r.ok:
         return r
     else:
-        print(r.json()['message'])
+        sys.stdout.write('%s\n' %r.json()['message'])
         sys.exit(1)
 
 # confirm that given repo exist
@@ -66,12 +66,12 @@ def _confirmRepo():
 
 # create a new repo on github
 def createRepo():
-    print('creating new repo...')
+    sys.stdout.write('creating new repo...\n')
     # test for existing repo
     data = _getRepo()
     for repo in data.json():
         if repo['name'].lower() == arg_list[3].lower():
-            print('error, repo already exist.')
+            sys.stdout.write('error, repo already exist.\n')
             sys.exit(1)
     # get user auth
     auth = (arg_list[1], arg_list[2])
@@ -85,18 +85,18 @@ def createRepo():
     r = requests.post(url, auth=auth, data=data)
     # check responcse
     if r.ok:
-        print('repo created')
+        sys.stdout.write('repo created\n')
         sys.exit(0)
     else:
-        print(r.json()['message'])
+        sys.stdout.write('%s\n' %r.json()['message'])
         sys.exit(1)
 
 # delete repo from github
 def delRepo():
-    print('checking existing repos...')
+    sys.stdout.write('checking existing repos...\n')
     # confirm repo name
     if _confirmRepo():
-        print('found repo, deleting...')
+        sys.stdout.write('found repo, deleting...\n')
         # get user auth
         auth = (arg_list[1], arg_list[2])
         # modify base url
@@ -105,22 +105,22 @@ def delRepo():
         r = requests.delete(url, auth=auth)
         # check responcse
         if r.ok:
-            print('repo deleted')
+            sys.stdout.write('repo deleted\n')
             sys.exit(0)
         else:
-            print(r.json()['message'])
+            sys.stdout.write('%s\n' %r.json()['message'])
             sys.exit(1)
     else:
-        print('no repo exist with the name:',arg_list[3])
+        sys.stdout.write('no repo exist with the name: %s\n' %arg_list[3])
         # return invalid repo
         sys.exit(1)
 
 # add/change repo description
 def descRepo():
-    print('changing repo description...')
+    sys.stdout.write('changing repo description...\n')
     # confirm repo name
     if _confirmRepo():
-        print('found repo, updating...')
+        sys.stdout.write('found repo, updating...\n')
         # get user auth
         auth = (arg_list[1], arg_list[2])
         # modify base url
@@ -131,13 +131,13 @@ def descRepo():
         r = requests.patch(url, auth=auth, data=data)
         # check responcse
         if r.ok:
-            print('description changed')
+            sys.stdout.write('description changed\n')
             sys.exit(0)
         else:
-            print(r.json()['message'])
+            sys.stdout.write('%s\n' %r.json()['message'])
             sys.exit(1)
     else:
-        print('no repo exist with the name:',arg_list[3])
+        sys.stdout.write('no repo exist with the name: %s\n' %arg_list[3])
         # return invalid repo
         sys.exit(1)
 
@@ -147,15 +147,15 @@ def repoList():
     data = _getRepo()
     # display info
     for repo in data.json():
-        print('         name: ',repo['name'])
-        print('  description: ',repo['description'])
-        print('      private: ',repo['private'])
-        print('-----------------------------------')
+        sys.stdout.write('         name: %s\n' %repo['name'])
+        sys.stdout.write('  description: %s\n' %repo['description'])
+        sys.stdout.write('      private: %s\n' %repo['private'])
+        sys.stdout.write('-----------------------------------\n')
     sys.exit(0)
 
 # change repo visibility
 def gitVisibility():
-    print('changing repo visibility...')
+    sys.stdout.write('changing repo visibility...\n')
     # get user auth
     auth = (arg_list[1],arg_list[2])
     # modify url
@@ -178,13 +178,13 @@ def gitVisibility():
         r = requests.patch(url, auth=auth, data=data)
         # check response
         if r.ok:
-            print('done, private =',private)
+            sys.stdout.write('done, private = %s\n' %private)
             sys.exit(0)
         else:
-            print(r.json()['message'])
+            sys.stdout.write('%s\n' %r.json()['message'])
             sys.exit(1)
     else:
-        print('no repo exist with the name:',arg_list[3])
+        sys.stdout.write('no repo exist with the name: %s\n' %arg_list[3])
         # return invalid repo
         sys.exit(1)
 
