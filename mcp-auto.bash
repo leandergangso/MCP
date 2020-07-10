@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # will automaticly activate and deactivate virtual environments.
 cd() {
@@ -13,11 +13,11 @@ cd() {
 		[[ $@ == '..' ]] && return
 		
 		## activate when going INTO a folder with venv
-		if [[ -d "$PWD/.env/Scripts" ]]; then
+		if [[ -a "$PWD/.env/Scripts/autoenv" ]]; then
 			source "$PWD/.env/Scripts/activate"
 			autoenv_path="$PWD"
 		else
-		if [[ -d '.env/bin' ]]; then
+		if [[ -a '.env/bin/autoenv' ]]; then
 			source "$PWD/.env/bin/activate"
 			autoenv_path="$PWD"
 		fi
