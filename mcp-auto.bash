@@ -20,7 +20,6 @@ cd() {
 		
 		## activate when going INTO a folder with venv
 		if [[ -a "$PWD/.env/Scripts/autoenv" ]]; then
-			echo 'activating'
 			source "$PWD/.env/Scripts/activate"
 			autoenv_path="$PWD"
 
