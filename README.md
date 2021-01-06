@@ -21,11 +21,15 @@
 - Allow for file execution: `chmod 766 mcp`
 - Type: `mcp help` in a terminal for usage information.
 
+## Extra commands:
+- `activate` mcp will try to activate the closest environment.
+- `autols` will toggle the `ls` command to automaticlly run after every `cd` command.
+
 ### Note:
-- If you are in a virtual environment that that dosen't have virtualenv or requests installed, then some commands may not work.
+- If you are in a virtual environment that that dosen't have requests installed, then some commands may not work.
   - If thats the case, do the following:
     - Type `deactivate` (will deactivate the environment).
-    - Type your *command*.
+    - Type your *commands*.
     - Type `activate` (will activate the environment again).
 - Some commands require that you have the environment activated.
   - The error msg will notify you if thats the case.
