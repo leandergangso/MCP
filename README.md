@@ -1,13 +1,15 @@
 # Manage and Create Projects (MCP)
 
-## Features:
+## Features
+
 - Setup new project environments.
 - Add and create new repo's on github.
 - Clone any repo with reponame and username.
 - Setup virtualenv on any folder.
 - Add environment veriables for choosen folder(env).
 
-## Steps to setup MCP:
+## Steps to setup MCP
+
 - Add the MCP folder to the PATH.
 - Add environment veriable: `GITHUB_USERNAME='github username'`
 - Add environment veriable: `GITHUB_AUTH='github password or token'`
@@ -21,11 +23,13 @@
 - Allow for file execution: `chmod 766 mcp`
 - Type: `mcp help` in a terminal for usage information.
 
-## Extra commands:
+## Extra commands
+
 - `activate` mcp will try to activate the closest environment.
 - `autols` will toggle the `ls` command to automaticlly run after every `cd` command.
 
-### Note:
+### Note
+
 - If you are in a virtual environment that that dosen't have requests installed, then some commands may not work.
   - If thats the case, do the following:
     - Type `deactivate` (will deactivate the environment).
