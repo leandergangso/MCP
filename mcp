@@ -73,7 +73,7 @@ mcp(){
 		echo "    Create new project with: github(g), ssh protocol(default), public repo(p), virtualenv(v), disable autoenv(a) and description(d)"
 		echo "    mcp -gpvad 'description' name"
 		echo ""
-		echo "PS: If no <name> is given, it will use the current folder."		
+		echo "Note: If no <name> is given, current folder name will be used."		
 
 		# Success
 		exit 0
@@ -389,13 +389,14 @@ envVariable(){
 	# error check
 	[[ $# != 3 ]] && echo 'error, need name and value.' && echo "$usage" && exit 1
 
-	echo 'adding new environment variable...'
 
 	# ENV is activate
 	if [[ -z "$VIRTUAL_ENV" ]]; then
-		echo 'error, env need to be activated.'
+		echo 'error, env needs to be activated first, type: "activate".'
 		exit 1
 	fi
+
+	echo 'adding new environment variable...'
 
 	# find env folder
 	findEnv
@@ -430,7 +431,7 @@ envVariable(){
 	[[ $3 == *" "* ]] && echo "error, can't use spaces." && exit 1
 
 	# check for unique ENV name
-	if ! printenv | grep -qw "$2"= && ! cat custom_variables | grep -qw "$2"= ; then
+	if ! printenv | grep -q "$2"= && ! cat custom_variables | grep -q "$2"= ; then
 		# copy file
 		cat activate > activate2 &&
 		# add export
@@ -444,7 +445,7 @@ envVariable(){
 		# update .bak
 		cat activate > activate.bak &&
 		# restore file on error
-		echo 'added successfully' && echo 'IMPORTANT: re-activate env for variable to init.' || ( echo 'data may have been lost, type: "mcp variables" to check.' && cat activate.bak > activate )
+		echo 'added successfully' && echo 'IMPORTANT: re-activate env for variable to init.' || ( echo 'data may have been lost, type: "mcp var" to check.' && cat activate.bak > activate )
 
 		# delete activate2
 		rm -f activate2
@@ -452,9 +453,35 @@ envVariable(){
 		# Success
 		exit 0
 	else
-		echo 'ops, environment name already exists.'
-		exit 1
+		# ask to overwrite environment variable
+		read -p "overwrite variable: '$2', continue? [y,n] " yn
+		case $yn in
+			[Yy] ) overwriteVariable "$@";;
+			[Nn] ) echo 'not overwriting' && exit 0;;
+			* ) echo 'not a valid input, no action taken' && exit 0;;
+		esac
+
+		# Success
+		exit 0
 	fi
+}
+
+# overwrite environment variable
+overwriteVariable(){
+	# edit export
+	sed -i 's/export '$2'=.*/export '$2'='$3'/' activate
+
+	# update variables to log
+	sed -i 's/'$2'=.*/'$2'='$3'/' custom_variables
+
+	# update .bak
+	cat activate > activate.bak &&
+
+	# restore file on error
+	echo 'overwritten successfully' && echo 'IMPORTANT: re-activate env for variable to init.' || ( echo 'data may have been lost, type: "mcp var" to check.' && cat activate.bak > activate )
+
+	# Success
+	exit 0
 }
 
 # get environment variables
@@ -479,20 +506,25 @@ variableList(){
 variableDelete(){
 	# error check
 	[[ $# == 1 ]] && echo 'error, need at least one argument.' && echo "$usage" && exit 1
-	echo 'deleting environment variable...'
+
 	# ENV is activate
 	if [[ -z "$VIRTUAL_ENV" ]]; then
-		echo 'error, env needs to be activated.'
+		echo 'error, env needs to be activated, type: "activate".'
 		exit 1
 	fi
+
+	echo 'deleting environment variable...'
+
 	# find env folder
 	findEnv
+
 	# check for file
 	[[ ! -a custom_variables ]] && echo 'No environment variables has been set.' && exit 1
+	
 	# delete all arguments
 	for i in ${@:2} ; do
 		# check if variable exist
-		! cat custom_variables | grep -q $i && echo 'error, variable "'$i'" was not set.'
+		! cat custom_variables | grep -q $i && echo 'error, variable "'$i'" was not set.' || exit 1
 		# delete line from activate
 		sed -i "/unset $i\b/d" activate &&
 		sed -i "/export $i\b/d" activate &&
@@ -504,6 +536,7 @@ variableDelete(){
 		echo "deleted: $i" ||
 		echo "error, wasen't able to delete the variable."
 	done
+
 	# note
 	echo 'IMPORTANT: deactivate env for variable to unset.'
 
@@ -513,11 +546,15 @@ variableDelete(){
 
 # setup new env
 setupEnv(){
-	echo 'setting up environment...'
 	# check if env exists
 	[[ -a $env_name ]] && echo "error, $env_name is already in this folder." && exit 1
-	# setup env
-	virtualenv $env_name
+
+	echo 'setting up environment...'
+
+	# setup env with python -m
+	python -m venv $env_name ||
+	( echo 'need python to creat venv!' &&
+	exit 1 )
 	# check for autoenv
 	[[ $env_autoenv == true ]]
 	if [[ -a "$env_name/Scripts" ]]; then
@@ -525,8 +562,11 @@ setupEnv(){
 	else
 		cd "$env_name/bin"
 	fi
-	echo 'this file is used as a key to activate the environment.' > autoenv
 
+	# add text to file
+	echo 'this file is used as a key to activate the environment.' > autoenv
+	# finsihed
+	echo 'environment setup, type: "activate" to activate.'
 	# Success
 	exit 0
 }
