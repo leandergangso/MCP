@@ -50,7 +50,7 @@ mcp(){
 		echo "    repolist	Get a list of all repo's."
 		echo "    repodesc	Change the description for given repo."
 		echo "    delrepo	Delete a repo from github."
-		echo "    env		Create local environment variable."
+		echo "    env		Create/change local environment variable."
 		echo "    var	 	Get a list of all local environment variables."
 		echo "    delvar	Delete a local environment variable."
 		echo "    autoenv	Toggle automatic environment activation (same as '-a' bellow)."
@@ -524,7 +524,7 @@ variableDelete(){
 	# delete all arguments
 	for i in ${@:2} ; do
 		# check if variable exist
-		! cat custom_variables | grep -q $i && echo 'error, variable "'$i'" was not set.' || exit 1
+		! cat custom_variables | grep -q $i && echo 'error, variable "'$i'" was not set.' && exit 1
 		# delete line from activate
 		sed -i "/unset $i\b/d" activate &&
 		sed -i "/export $i\b/d" activate &&
