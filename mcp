@@ -592,19 +592,21 @@ folderStatus(){
 	# go to current dir
 	cd $path_current
 
-	echo 'Folder status:' && fstatus=true
+	fstatus=true
+
+	echo 'Folder status:'
+
+	[[ -d '.git' ]] && echo '  - git is added.' && fstatus=false
+	[[ -d "$env_name" ]] && echo '  - env is added.' && fstatus=false && env=true
 
 	# find env by backtracking
 	for i in {1..10} ; do
-		# look for folders
-		[[ -d '.git' ]] && echo '  - git is added.' && fstatus=false
-		[[ -d "$env_name" ]] && echo '  - env is added.' && fstatus=false && env=true
-		[[ -a '.env/Scripts/autoenv' || -a '.env/bin/autoenv' ]] && echo '  - autoenv is enabled.' || ( [[ $env == true ]] && echo '  - autoenv is disabled.' ) &&
+		[[ -a '.env/Scripts/autoenv' || -a '.env/bin/autoenv' ]] && echo '  - autoenv is enabled.' || ( [[ "$env" == true ]] && echo '  - autoenv is disabled.' ) &&
 		# exit
 		break ||
 		# go out of current folder
 		cd ..
-
+		
 		# file not found
 		[[ $i == 10 ]] && [[ $fstatus == true ]] && echo '  - just a normal folder.'
 	done

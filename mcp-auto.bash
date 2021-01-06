@@ -5,6 +5,11 @@ cd() {
 	# run main cd command
 	builtin cd "$@"
 
+	# check for "ls"
+	if [[ $automatic_ls ]]; then
+		ls
+	fi
+
 	# deactivate when going to a higher lvl than the env folder
 	if [[ "$PWD" != *"$autoenv_path"* ]] ; then
 		deactivate
@@ -60,5 +65,16 @@ activate(){
 	else
 		# user error
 		echo 'error, env is already active.'
+	fi
+}
+
+# will run "ls" command after every "cd" command
+autols(){
+	if [[ "$automatic_ls" ]]; then
+		automatic_ls=true
+		echo '"ls" will be executed after every "cd" command.'
+	else
+		automatic_ls=false
+		echo '"ls" will NOT be executed after every "cd" command.'
 	fi
 }
