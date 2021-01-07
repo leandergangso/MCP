@@ -12,21 +12,23 @@
 
 - Add the MCP folder to the PATH.
 - Add environment veriable: `GITHUB_USERNAME='github username'`
-- Add environment veriable: `GITHUB_AUTH='github password or token'`
+- Add environment veriable: `GITHUB_AUTH='github token'`
   - A token can be made at: *github.com > settings > developer settings > personal access token.*
-  - make sure that you use the scopes: **repo, delete_repo.**
-- Add environment veriable: `MCP_PATH='full path to the MCP folder'`
-- Add `source mcp-auto.bash` to the config file that runs on terminal startup.
+  - make sure that you use the scopes: **repo, delete_repo**
+- Optional: add `source mcp-auto.bash` to the config file that runs on terminal startup. (will allow for 'extra commands')
 - Python and pip needs to be installed
-  - Type `pip install virtualenv` in a terminal.
   - Type `pip install requests` in a terminal.
 - Allow for file execution: `chmod 766 mcp`
 - Type: `mcp help` in a terminal for usage information.
 
-## Extra commands
+## Extra commands (only works if you have setup mcp-auto.bash)
 
 - `activate` mcp will try to activate the closest environment.
 - `autols` will toggle the `ls` command to automaticlly run after every `cd` command.
+  - is disabled by default.
+  - if directory contains more than 20 items, `ls` will not run.
+    - 20 is the default value
+    - edit default value with `autols item_count` (item_count needs to be a number)
 
 ### Note
 
