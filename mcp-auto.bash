@@ -79,7 +79,7 @@ autols(){
 			# set new limit nr
 			sed -i '103 s/ls_file_limit=".*"/ls_file_limit="'$1'"/' "$MCP_DIR/mcp-auto.bash"
 			ls_file_limit=$1
-			echo 'ls limit updated to:' $ls_file_limit
+			echo 'limit updated to:' $ls_file_limit
 		else
 			echo 'not valid, need a number'
 		fi
