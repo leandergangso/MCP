@@ -7,7 +7,7 @@ mcp(){
 	# ENVIRONMENT VARIABLES:
 	#--------------------------------------------------------------#
 	# full path to mcp folder
-	path_mcp="$MCP_PATH"
+	path_mcp="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	# github username
 	github_username="$GITHUB_USERNAME"
 	# github password or token
