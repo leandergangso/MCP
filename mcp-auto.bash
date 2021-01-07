@@ -6,8 +6,11 @@ cd() {
 	builtin cd "$@"
 
 	# check for "ls"
-	if [[ $automatic_ls ]]; then
-		ls
+	if [[ "$automatic_ls" == true ]]; then
+		filecount=$(ls | wc -l)
+		if  [[ "$filecount" -le "$ls_file_limit" ]]; then
+			ls
+		fi
 	fi
 
 	# deactivate when going to a higher lvl than the env folder
@@ -70,11 +73,33 @@ activate(){
 
 # will run "ls" command after every "cd" command
 autols(){
-	if [[ "$automatic_ls" ]]; then
-		automatic_ls=true
-		echo '"ls" will be executed after every "cd" command.'
+	if [[ $1 ]]; then
+		re='^[0-9]+$'
+		if [[ $1 =~ $re ]]; then
+			# set new limit nr
+			sed -i '103 s/ls_file_limit=".*"/ls_file_limit="'$1'"/' "$MCP_DIR/mcp-auto.bash"
+			ls_file_limit=$1
+			echo 'ls limit updated to:' $ls_file_limit
+		else
+			echo 'not valid, need a number'
+		fi
 	else
-		automatic_ls=false
-		echo '"ls" will NOT be executed after every "cd" command.'
+		# toggle value
+		if [[ "$automatic_ls" == true ]]; then
+			automatic_ls=false
+			echo 'autols is disabled'
+		else
+			automatic_ls=true
+			echo 'autols is enabled (disabled when more than '$ls_file_limit' itmes in dir)'
+		fi
+		# edit file
+		sed -i '$ s/automatic_ls=.*/automatic_ls='$automatic_ls'/' "$MCP_DIR/mcp-auto.bash"
 	fi
 }
+
+# file dir path
+MCP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# disable on dir file count
+ls_file_limit="20"
+# toggle automatic ls
+automatic_ls=true
