@@ -2,11 +2,17 @@
 
 ## Features
 
-- Setup new project environments.
-- Add and create new repo's on github.
-- Clone any repo with reponame and username.
-- Setup virtualenv on any folder.
-- Add environment veriables for choosen folder(env).
+- Create a repo on github and connect to new foler on local machine.
+- Clone a repo from github to local machine.
+- Delete repo from github. (local version will still be intact)
+- Toggle repo visibility. (private/public)
+- Get a list of all your repo's.
+- Change repo description.
+- Setup virtual environment on any folder.
+- Create, see and delete 'folder based' environment variables.
+- Automatic environment activation and deactivation.
+- `activate` command instead of the use of eks: `source /.env/bin/activate` (can be executed within lower folders)
+- Automatic `ls` after performed `cd` command. (default: is ignored if dir contains more than 20 items)
 
 ## Steps to setup MCP
 
