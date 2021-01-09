@@ -1,5 +1,9 @@
 # Manage and Create Projects (MCP)
 
+Tested on both Windows and Linux.
+  - using cmder on Windows.
+  - using Ubuntu Linux.
+
 ## Features
 
 - Create a repo on github and connect to new foler on local machine.
