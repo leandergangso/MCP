@@ -10,7 +10,7 @@
 
 ## Steps to setup MCP
 
-- Add the MCP folder to the PATH.
+- Add the MCP folder to the PATH: `/etc/environment`
 - Add environment veriable: `GITHUB_USERNAME='github username'`
 - Add environment veriable: `GITHUB_AUTH='github token'`
   - A token can be made at: *github.com > settings > developer settings > personal access token.*
