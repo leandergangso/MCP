@@ -532,7 +532,6 @@ variableDelete(){
 		cat activate > activate.bak &&
 		# delete line from log file
 		sed -i "/^$i\b/d" custom_variables &&
-		sed -i "/^$i\b/d" custom_variables &&
 		echo "deleted: $i" ||
 		echo "error, wasen't able to delete the variable."
 	done
