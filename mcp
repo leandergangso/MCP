@@ -175,7 +175,7 @@ mcp(){
 		# go to script folder
 		cd "$path_mcp"
 		# create new repo (method, username, auth, name, desc, visibility)
-		python mcp-api.py "createRepo" "$github_username" "$github_auth" "$name" "$git_desc" "$git_private"
+		python3 mcp-api.py "createRepo" "$github_username" "$github_auth" "$name" "$git_desc" "$git_private"
 		# error code
 		ec="$?"
 		# if success
@@ -300,12 +300,12 @@ protocol(){
 
 # get all repo's
 getRepo(){
-	# go to python script
+	# go to python3 script
 	cd "$path_mcp"
 	# user text
 	echo 'Github repo list:'
 	# get repo list from api (method, username, auth)
-	python mcp-api.py "repoList" "$github_username" "$github_auth"
+	python3 mcp-api.py "repoList" "$github_username" "$github_auth"
 	# Success
 	exit 0
 }
@@ -314,10 +314,10 @@ getRepo(){
 descRepo(){
 	# error check
 	[[ $# != 3 ]] && echo 'error, need name and description.' && echo "$usage" && exit 1
-	# go to python script
+	# go to python3 script
 	cd "$path_mcp"
-	# run python
-	python mcp-api.py "descRepo" "$github_username" "$github_auth" "$2" "$3"
+	# run python3
+	python3 mcp-api.py "descRepo" "$github_username" "$github_auth" "$2" "$3"
 	# Success
 	exit 0
 }
@@ -326,12 +326,12 @@ descRepo(){
 deleteRepo(){
 	# error check
 	[[ $# != 2 ]] && echo 'error, need repo name.' && echo "$usage" && exit 1
-	# go to python script
+	# go to python3 script
 	cd "$path_mcp"
 	# user comfirm
 	read -p "about to delete: '$2', continue? [y,n] " yn
 	case $yn in
-		[Yy] ) python mcp-api.py "delRepo" "$github_username" "$github_auth" "$2";;
+		[Yy] ) python3 mcp-api.py "delRepo" "$github_username" "$github_auth" "$2";;
 		[Nn] ) exit 0;;
 		* ) exit 0;;
 	esac
@@ -343,10 +343,10 @@ deleteRepo(){
 toggleRepo(){
 	# error check
 	[[ $# != 2 ]] && echo 'error, need repo name.' && echo "$usage" && exit 1
-	# go to python script
+	# go to python3 script
 	cd "$path_mcp"
 	# toggle visibility (method, username, auth, reponame)
-	python mcp-api.py "gitVisibility" "$github_username" "$github_auth" "$2"
+	python3 mcp-api.py "gitVisibility" "$github_username" "$github_auth" "$2"
 	# dynamic exit
 	exit $?
 }
@@ -551,9 +551,9 @@ setupEnv(){
 
 	echo 'setting up environment...'
 
-	# setup env with python -m
-	python -m venv $env_name ||
-	( echo 'need python to creat venv!' &&
+	# setup env with python3 -m
+	python3 -m venv $env_name ||
+	( echo 'need python3 to creat venv!' &&
 	exit 1 )
 	# check for autoenv
 	[[ $env_autoenv == true ]]

@@ -16,7 +16,7 @@
   - A token can be made at: *github.com > settings > developer settings > personal access token.*
   - make sure that you use the scopes: **repo, delete_repo**
 - Optional: add `source mcp-auto.bash` to the config file that runs on terminal startup. (will allow for 'extra commands')
-- Python and pip needs to be installed
+- Python3 and pip needs to be installed
   - Type `pip install requests` in a terminal.
 - Allow for file execution: `chmod 766 mcp`
 - Type: `mcp help` in a terminal for usage information.
