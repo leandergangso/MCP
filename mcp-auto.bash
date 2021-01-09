@@ -102,4 +102,4 @@ MCP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # disable on dir file count
 ls_file_limit="20"
 # toggle automatic ls
-automatic_ls=true
+automatic_ls=false
