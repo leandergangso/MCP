@@ -69,15 +69,18 @@ fi
 # add path to file
 if ! grep -q "export PATH=.*$MCP_DIR" "$FILE"; then
     printf "export PATH=\"\$PATH:$MCP_DIR\"\n" >> "$FILE"
+    printf "PATH added to "$FILE".\n"
 fi
 
 
 # add github auth to FILE
 if ! grep -q "export GITHUB_USERNAME" "$FILE"; then
     printf "export GITHUB_USERNAME=\"$USERNAME\"\n" >> "$FILE"
+    printf "GITHUB_USERNAME added to "$FILE".\n"
 fi
 if ! grep -q "export GITHUB_AUTH" "$FILE"; then
     printf "export GITHUB_AUTH=\"$PAT\"\n" >> "$FILE"
+    printf "GITHUB_AUTH added to "$FILE".\n"
 fi
 
 
