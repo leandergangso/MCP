@@ -20,23 +20,24 @@ esac
 
 
 # add mcp folder to PATH
-if [[ -a "/etc/environment" ]] ; then
-    # check if done before
-
-    # cp /etc/environment /etc/environment.mcp_bak
-    # environment_content=$(cat /etc/environment | cut -d '"' -f 2)
-    # printf "PATH=\"$environment_content:$MCP_DIR\"\n" > /etc/environment
-    printf "Added: $MCP_DIR to /etc/environment. (backup created)\n"
-else
+if [[ -f /etc/environment ]] ; then
     printf "$red!! The file 'environment' do not exist, STEP.1 has to be done MANUALLY. !!$end\n"
+else
+    if ! grep -q "$MCP_DIR" /etc/environment; then
+        cp /etc/environment /etc/environment.mcp_bak
+        environment_content=$(cat /etc/environment | cut -d '"' -f 2)
+        printf "PATH=\"$environment_content:$MCP_DIR\"\n" > /etc/environment
+        printf "Added: $MCP_DIR to /etc/environment. (backup created)\n"
+    else
+        printf "MCP already added to PATH.\n"
+    fi
 fi
 
 
 # add username
-printf "\nAdding GITHUB variables:\n"
 while true; do
     read -p "Enter your GITHUB username:" USERNAME
-    read -p "Is this your username, $USERNAME [y,n]" yn
+    read -p "Is this your username, $USERNAME [y,n] " yn
     case $yn in
         [Yy] ) break;;
         [Nn] ) ;;
@@ -47,10 +48,10 @@ done
 
 # check for existing PAT
 while true; do
-    read -p "Do you have a Personal Access Token (PAT)? [y,n]" yn
+    read -p "Do you have a Personal Access Token (PAT)? [y,n] " yn
     case $yn in
         [Yy] ) break;;
-        [Nn] ) printf "Create PAT here: https://github.com/settings/tokens \nNote: the PAT needs to have 'REPO' and 'DELETE_REPO' tagged.\n" && break;;
+        [Nn] ) printf "$red Create PAT here: https://github.com/settings/tokens $end\nNote: the PAT needs to have 'REPO' and 'DELETE_REPO' tagged.\n" && break;;
         * ) printf "Invalid input, try again.\n";;
     esac
 done
@@ -58,8 +59,8 @@ done
 
 # ask for PAT
 while true; do
-    read -p "Enter you PAT:" PAT
-    read -p "Is this your PAT, $PAT [y,n]" yn
+    read -p "Enter you PAT: " PAT
+    read -p "Is this your PAT, $PAT [y,n] " yn
     case $yn in
         [Yy] ) printf "Saving PAT to .profile\n" && break;;
         [Nn] ) printf "\n";;
@@ -69,14 +70,13 @@ done
 
 
 # locate .profile or .bashrc
-cd ~
-if [[ -a ".profile" ]]; then
-    FILE=".profile"
+if [[ -f "~/.profile" ]]; then
+    FILE="~/.profile"
 else
-    if [[ -a ".bashrc" ]]; then
-        FILE=".bashrc"
+    if [[ -f "~/.bashrc" ]]; then
+        FILE="~/.bashrc"
     else
-        read -p "Enter path to .bashrc or .profile:" FILE
+        read -p "Enter full path to .profile or .bashrc: " FILE
     fi
 fi
 
@@ -106,11 +106,11 @@ type -P pip3 >/dev/null 2>&1 && printf "Pip3 is installed.\n" || printf "$red!! 
 # set correct chmod
 cd $MCP_DIR
 chmod 755 mcp
-chmod 755 mcp-api.py
-chmod 644 mcp-auth.bash
-rm -rf mcp-setup.bash
+chmod 644 mcp-api.py
+chmod 644 mcp-auto.bash
+chmod 000 mcp-setup.bash
 
 
 # finish text + tips
-printf "Setup finished.\n\nPlease fix any errors(in red) that may have occured!\nNote: mcp-setup.bash has been deleted as it's no longer needed."
+printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\nNote: mcp-setup.bash has been BLOCKED to not run again.\n"
 
