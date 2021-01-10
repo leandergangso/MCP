@@ -103,11 +103,6 @@ type -P python3 >/dev/null 2>&1 && printf "Python3 is installed.\n" || printf "$
 type -P pip3 >/dev/null 2>&1 && printf "Pip3 is installed.\n" || printf "$red!! You need to install pip3. !!$end\n"
 
 
-# set chmod
-cd $MCP_DIR
-chmod 644 mcp-setup.bash
-
-
 # finish text + tips
-printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\nNote: mcp-setup.bash has been DISABLED.\n"
+printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!.\n"
 
