@@ -65,6 +65,8 @@ else
     fi
 fi
 
+printf "\n\n$FILE\n\n"
+
 
 # add path to file
 if ! grep -q "export PATH=\$PATH:$MCP_DIR" "$FILE"; then
