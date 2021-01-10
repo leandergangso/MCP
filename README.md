@@ -33,7 +33,7 @@ Tested on both Windows and Linux.
 - Add the MCP folder to the PATH: `/etc/environment`
 - Add environment variable: `GITHUB_USERNAME='github username'`
 - Add environment variable: `GITHUB_AUTH='github token'`
-  - A token can be made <a href="https://github.com/settings/tokens" target="_blank">HERE.</a>
+  - A token can be made [here](https://github.com/settings/tokens).
   - make sure that you use the scopes: **repo, delete_repo**
 - Optional: add `source mcp-auto.bash` to the config file that runs on terminal startup. (will allow for 'extra commands')
 - Python3 and pip3 needs to be installed
