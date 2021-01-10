@@ -37,7 +37,7 @@ fi
 # add username
 while true; do
     read -p "Enter your GITHUB username: " USERNAME
-    read -p "Is this your username, $USERNAME [y,n] " yn
+    read -p "Is this your username, "$USERNAME" [y,n] " yn
     case $yn in
         [Yy] ) break;;
         [Nn] ) ;;
@@ -60,7 +60,7 @@ done
 # ask for PAT
 while true; do
     read -p "Enter you PAT: " PAT
-    read -p "Is this your PAT, $PAT [y,n] " yn
+    read -p "Is this your PAT, "$PAT" [y,n] " yn
     case $yn in
         [Yy] ) break;;
         [Nn] ) ;;
@@ -103,14 +103,11 @@ type -P python3 >/dev/null 2>&1 && printf "Python3 is installed.\n" || printf "$
 type -P pip3 >/dev/null 2>&1 && printf "Pip3 is installed.\n" || printf "$red!! You need to install pip3. !!$end\n"
 
 
-# set correct chmod
+# set chmod
 cd $MCP_DIR
-chmod 755 mcp
-chmod 644 mcp-api.py
-chmod 644 mcp-auto.bash
-rm -rf mcp-setup.bash
+chmod 644 mcp-setup.bash
 
 
 # finish text + tips
-printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\nNote: mcp-setup.bash has been DELETED.\n"
+printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\nNote: mcp-setup.bash has been DISABLED.\n"
 
