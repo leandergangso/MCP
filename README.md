@@ -30,7 +30,7 @@ Tested on both Windows and Linux.
 
 ## Manual setup (Linux, Windows)
 
-- Add the MCP folder to the PATH: `/etc/environment`
+- Add to PATH: `export PATH=$PATH:'path to mcp'`
 - Add environment variable: `GITHUB_USERNAME='github username'`
 - Add environment variable: `GITHUB_AUTH='github token'`
   - A token can be made [here](https://github.com/settings/tokens).
