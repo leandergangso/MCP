@@ -67,8 +67,8 @@ fi
 
 
 # add path to file
-if ! grep -q "export PATH=\$PATH:$MCP_DIR" "$FILE"; then
-    printf "export PATH=\"\$PATH:$MCP_DIR\"" >> "$FILE"
+if ! grep -q "export PATH=.*$MCP_DIR" "$FILE"; then
+    printf "export PATH=\"\$PATH:$MCP_DIR\"\n" >> "$FILE"
 fi
 
 
@@ -79,7 +79,6 @@ fi
 if ! grep -q "export GITHUB_AUTH" "$FILE"; then
     printf "export GITHUB_AUTH=\"$PAT\"\n" >> "$FILE"
 fi
-printf "GITHUB variables added to "$FILE".\n"
 
 
 # add mcp-auto.bash to FILE
@@ -90,8 +89,8 @@ fi
 
 
 # check if python3 and pip3 is installed
-type -P python3 >/dev/null 2>&1 && printf "Python3 is installed.\n" || printf "$red!! You need to install python3. !!$end\n"
-type -P pip3 >/dev/null 2>&1 && printf "Pip3 is installed.\n" || printf "$red!! You need to install pip3. !!$end\n"
+type -P python3 >/dev/null 2>&1 || printf "$red!! You need to install python3. !!$end\n"
+type -P pip3 >/dev/null 2>&1 || printf "$red!! You need to install pip3. !!$end\n"
 
 
 # finish text + tips
