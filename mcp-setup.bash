@@ -67,8 +67,8 @@ fi
 
 
 # add path to file
-if ! grep -q "export PATH=$PATH:$MCP_DIR" $FILE; then
-    printf "export PATH=$PATH:$MCP_DIR" >> $FILE
+if ! grep -q "export PATH=\$PATH:$MCP_DIR" $FILE; then
+    printf "export PATH=\"\$PATH:$MCP_DIR\"" >> $FILE
 fi
 
 
@@ -95,5 +95,5 @@ type -P pip3 >/dev/null 2>&1 && printf "Pip3 is installed.\n" || printf "$red!! 
 
 
 # finish text + tips
-printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!.\n\nNote: Do run \"pip3 install requests\" if you dont already have done so!"
+printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!.\n\nNote: Do run \"pip3 install requests\" if you dont already have done so!\n"
 
