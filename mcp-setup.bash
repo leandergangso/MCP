@@ -94,5 +94,5 @@ type -P pip3 >/dev/null 2>&1 || printf "$red!! You need to install pip3. !!$end\
 
 
 # finish text + tips
-printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!.\n\nNote: Do run \"pip3 install requests\" if you dont already have done so!\n"
+printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\n\nNote: Do run \"pip3 install requests\" if you dont already have done so!\n"
 
