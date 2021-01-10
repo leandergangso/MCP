@@ -37,8 +37,7 @@ Tested on both Windows and Linux.
   - make sure that you use the scopes: **repo, delete_repo**
 - Optional: add `source mcp-auto.bash` to the config file that runs on terminal startup. (will allow for 'extra commands')
 - Python3 and pip3 needs to be installed
-  - Type `pip install requests` in a terminal.
-- Allow for file execution: `chmod 766 mcp`
+  - Type `pip3 install requests` in a terminal.
 - Type: `mcp help` in a terminal for usage information.
 
 ## Extra commands (only works if you have setup mcp-auto.bash)

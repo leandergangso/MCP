@@ -104,5 +104,5 @@ type -P pip3 >/dev/null 2>&1 && printf "Pip3 is installed.\n" || printf "$red!! 
 
 
 # finish text + tips
-printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!.\n"
+printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!.\n\nNote: Do run \"pip3 install requests\" if you dont already have done so!"
 
