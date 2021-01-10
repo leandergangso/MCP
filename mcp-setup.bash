@@ -108,9 +108,9 @@ cd $MCP_DIR
 chmod 755 mcp
 chmod 644 mcp-api.py
 chmod 644 mcp-auto.bash
-chmod 000 mcp-setup.bash
+rm -rf mcp-setup.bash
 
 
 # finish text + tips
-printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\nNote: mcp-setup.bash has been BLOCKED to not run again.\n"
+printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\nNote: mcp-setup.bash has been DELETED.\n"
 
