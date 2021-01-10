@@ -56,16 +56,14 @@ done
 
 # locate .profile or .bashrc
 if [[ -f ~/.profile ]]; then
-    FILE="~/.profile"
+    FILE=~/.profile
 else
     if [[ -f ~/.bashrc ]]; then
-        FILE="~/.bashrc"
+        FILE=~/.bashrc
     else
         read -p "Enter full path to .profile or .bashrc: " FILE
     fi
 fi
-
-printf "\n\n$FILE\n\n"
 
 
 # add path to file
