@@ -30,11 +30,12 @@ Tested on both Windows and Linux.
 
 ## Manual setup (Linux, Windows)
 
-- Add to PATH: `export PATH=$PATH:'path to mcp'`
-- Add environment variable: `GITHUB_USERNAME='github username'`
-- Add environment variable: `GITHUB_AUTH='github token'`
-  - A token can be made [here](https://github.com/settings/tokens).
-  - make sure that you use the scopes: **repo, delete_repo**
+- Add to .profile(linux) or environment(windows)
+  - Add path to mcp to PATH: `export PATH=$PATH:'path to mcp'`
+  - Add environment variable: `GITHUB_USERNAME='github username'`
+  - Add environment variable: `GITHUB_AUTH='github token'`
+    - A token can be made [here](https://github.com/settings/tokens).
+    - make sure that you use the scopes: **repo, delete_repo**
 - Optional: add `source mcp-auto.bash` to the config file that runs on terminal startup. (will allow for 'extra commands')
 - Python3 and pip3 needs to be installed
   - Type `pip3 install requests` in a terminal.
