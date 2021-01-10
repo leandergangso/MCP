@@ -21,8 +21,6 @@ esac
 
 # add mcp folder to PATH
 if [[ -f /etc/environment ]] ; then
-    printf "$red!! The file 'environment' do not exist, STEP.1 has to be done MANUALLY. !!$end\n"
-else
     if ! grep -q "$MCP_DIR" /etc/environment; then
         cp /etc/environment /etc/environment.mcp_bak
         environment_content=$(cat /etc/environment | cut -d '"' -f 2)
@@ -31,12 +29,14 @@ else
     else
         printf "MCP already added to PATH.\n"
     fi
+else
+    printf "$red!! The file 'environment' do not exist, STEP.1 has to be done MANUALLY. !!$end\n"
 fi
 
 
 # add username
 while true; do
-    read -p "Enter your GITHUB username:" USERNAME
+    read -p "Enter your GITHUB username: " USERNAME
     read -p "Is this your username, $USERNAME [y,n] " yn
     case $yn in
         [Yy] ) break;;
