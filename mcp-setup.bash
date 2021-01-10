@@ -22,10 +22,11 @@ esac
 # add mcp folder to PATH
 if [[ -f /etc/environment ]] ; then
     if ! grep -q "$MCP_DIR" /etc/environment; then
-        cp /etc/environment /etc/environment.mcp_bak
-        environment_content=$(cat /etc/environment | cut -d '"' -f 2)
-        printf "PATH=\"$environment_content:$MCP_DIR\"\n" > /etc/environment
-        printf "Added: $MCP_DIR to /etc/environment. (backup created)\n"
+        sudo cp /etc/environment /etc/environment.mcp_bak &&
+        environment_content=$(cat /etc/environment | cut -d '"' -f 2) &&
+        printf "PATH=\"$environment_content:$MCP_DIR\"\n" > /etc/environment &&
+        printf "Added: $MCP_DIR to /etc/environment. (backup created)\n" ||
+        printf "$red!! Could not add to PATH. !!\n"
     else
         printf "MCP already added to PATH.\n"
     fi
