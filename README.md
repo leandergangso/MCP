@@ -22,8 +22,8 @@ Tested on both Windows and Linux.
 ## Automatic setup (Linux)
 
 - Locate: `mcp-setup.bash`
-- Run: `chmod 755 mcp-setup.bash` (make it executable)
 - Run: `mcp-setup.bash`
+  - You may have to run: `chmod +x mcp-setup.bash` (make it executable)
 - Go through the setup process.
 - Done!
   - If you had a problem, please create an issue.
