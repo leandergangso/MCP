@@ -51,7 +51,7 @@ while true; do
     read -p "Do you have a Personal Access Token (PAT)? [y,n] " yn
     case $yn in
         [Yy] ) break;;
-        [Nn] ) printf "$red Create PAT here: https://github.com/settings/tokens $end\nNote: the PAT needs to have 'REPO' and 'DELETE_REPO' tagged.\n" && break;;
+        [Nn] ) printf "Create PAT here:$red https://github.com/settings/tokens $end\nNote: the PAT needs to have $red'REPO'$end and $red'DELETE_REPO'$end tagged.\n" && break;;
         * ) printf "Invalid input, try again.\n";;
     esac
 done
@@ -62,18 +62,18 @@ while true; do
     read -p "Enter you PAT: " PAT
     read -p "Is this your PAT, $PAT [y,n] " yn
     case $yn in
-        [Yy] ) printf "Saving PAT to .profile\n" && break;;
-        [Nn] ) printf "\n";;
+        [Yy] ) break;;
+        [Nn] ) ;;
         * ) printf "Invalid input, try again.\n";;
     esac
 done
 
 
 # locate .profile or .bashrc
-if [[ -f "~/.profile" ]]; then
+if [[ -f ~/.profile ]]; then
     FILE="~/.profile"
 else
-    if [[ -f "~/.bashrc" ]]; then
+    if [[ -f ~/.bashrc ]]; then
         FILE="~/.bashrc"
     else
         read -p "Enter full path to .profile or .bashrc: " FILE
@@ -88,7 +88,7 @@ fi
 if ! grep -q "export GITHUB_AUTH" $FILE; then
     printf "export GITHUB_AUTH=\"$PAT\"\n" >> $FILE
 fi
-printf "GITHUB variables added successfully.\n"
+printf "GITHUB variables added to $FILE.\n"
 
 
 # add mcp-auto.bash to FILE
