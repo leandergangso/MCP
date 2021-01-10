@@ -6,9 +6,9 @@ cd() {
 	builtin cd "$@"
 
 	# check for "ls"
-	if [[ "$automatic_ls" == true ]]; then
+	if [[ "$MCP_AUTO_LS" == true ]]; then
 		filecount=$(ls | wc -l)
-		if  [[ "$filecount" -le "$ls_file_limit" ]]; then
+		if  [[ "$filecount" -le "$MCP_LS_LIMIT" ]]; then
 			ls
 		fi
 	fi
@@ -73,33 +73,42 @@ activate(){
 
 # will run "ls" command after every "cd" command
 autols(){
+	if [[ ! -f "$MCP_PATH/default_values" ]]; then
+		echo "First time setup..."
+		echo "This file is used to keep track of you settings:" > "$MCP_PATH/default_values"
+		echo "MCP_AUTO_LS=false" >> "$MCP_PATH/default_values"
+		echo "MCP_LS_LIMIT=20" >> "$MCP_PATH/default_values"
+		MCP_AUTO_LS=false
+		MCP_LS_LIMIT=20
+	else
+		MCP_AUTO_LS=$(grep "MCP_AUTO_LS=.*" "$MCP_PATH/default_values" | cut -d '=' -f2)
+		MCP_LS_LIMIT=$(grep "MCP_LS_LIMIT=.*" "$MCP_PATH/default_values" | cut -d '=' -f2)
+	fi
+
 	if [[ $1 ]]; then
 		re='^[0-9]+$'
 		if [[ $1 =~ $re ]]; then
 			# set new limit nr
-			sed -i '103 s/ls_file_limit=".*"/ls_file_limit="'$1'"/' "$MCP_DIR/mcp-auto.bash"
-			ls_file_limit=$1
-			echo 'limit updated to:' $ls_file_limit
+			sed -i "s/MCP_LS_LIMIT=.*/MCP_LS_LIMIT=$1/" "$MCP_PATH/default_values"
+			MCP_LS_LIMIT=$1
+			echo 'limit updated to:' $MCP_LS_LIMIT
 		else
 			echo 'not valid, need a number'
 		fi
 	else
 		# toggle value
-		if [[ "$automatic_ls" == true ]]; then
-			automatic_ls=false
-			echo 'autols is disabled'
+		if [[ "$MCP_AUTO_LS" == false ]]; then
+			MCP_AUTO_LS=true
+			echo "autols is enabled (disabled when more than $MCP_LS_LIMIT itmes in dir)"
 		else
-			automatic_ls=true
-			echo 'autols is enabled (disabled when more than '$ls_file_limit' itmes in dir)'
+			MCP_AUTO_LS=false
+			echo 'autols is disabled'
 		fi
 		# edit file
-		sed -i '$ s/automatic_ls=.*/automatic_ls='$automatic_ls'/' "$MCP_DIR/mcp-auto.bash"
+		sed -i "s/MCP_AUTO_LS=.*/MCP_AUTO_LS=$MCP_AUTO_LS/" "$MCP_PATH/default_values"
 	fi
 }
 
 # file dir path
-MCP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-# disable on dir file count
-ls_file_limit="20"
-# toggle automatic ls
-automatic_ls=false
+MCP_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
