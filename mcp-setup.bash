@@ -22,7 +22,7 @@ esac
 # add username
 while true; do
     read -p "Enter your GITHUB username: " USERNAME
-    read -p "Is this your username, "$USERNAME" [y,n] " yn
+    read -p "Is this your username, \"$USERNAME\" [y,n] " yn
     case $yn in
         [Yy] ) break;;
         [Nn] ) ;;
@@ -45,7 +45,7 @@ done
 # ask for PAT
 while true; do
     read -p "Enter you PAT: " PAT
-    read -p "Is this your PAT, "$PAT" [y,n] " yn
+    read -p "Is this your PAT, \"$PAT\" [y,n] " yn
     case $yn in
         [Yy] ) break;;
         [Nn] ) ;;
@@ -67,25 +67,25 @@ fi
 
 
 # add path to file
-if ! grep -q "export PATH=\$PATH:$MCP_DIR" $FILE; then
-    printf "export PATH=\"\$PATH:$MCP_DIR\"" >> $FILE
+if ! grep -q "export PATH=\$PATH:$MCP_DIR" "$FILE"; then
+    printf "export PATH=\"\$PATH:$MCP_DIR\"" >> "$FILE"
 fi
 
 
 # add github auth to FILE
-if ! grep -q "export GITHUB_USERNAME" $FILE; then
-    printf "export GITHUB_USERNAME=\"$USERNAME\"\n" >> $FILE
+if ! grep -q "export GITHUB_USERNAME" "$FILE"; then
+    printf "export GITHUB_USERNAME=\"$USERNAME\"\n" >> "$FILE"
 fi
-if ! grep -q "export GITHUB_AUTH" $FILE; then
-    printf "export GITHUB_AUTH=\"$PAT\"\n" >> $FILE
+if ! grep -q "export GITHUB_AUTH" "$FILE"; then
+    printf "export GITHUB_AUTH=\"$PAT\"\n" >> "$FILE"
 fi
-printf "GITHUB variables added to $FILE.\n"
+printf "GITHUB variables added to "$FILE".\n"
 
 
 # add mcp-auto.bash to FILE
-if ! grep -q "mcp-auto.bash" $FILE; then
-    printf "source mcp-auto.bash\n" >> $FILE
-    printf "mcp-auto.bash added to $FILE.\n"
+if ! grep -q "mcp-auto.bash" "$FILE"; then
+    printf "source mcp-auto.bash\n" >> "$FILE"
+    printf "mcp-auto.bash added to "$FILE".\n"
 fi
 
 
