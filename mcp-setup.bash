@@ -5,6 +5,13 @@
 # as little humen intervention as possible.
 
 
+if [[ $UID != 0 ]]; then
+    echo "Please run this script with sudo:"
+    echo "sudo $0 $*"
+    exit 1
+fi
+
+
 # init variables
 MCP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 red=$'\e[1;31m'
@@ -26,7 +33,7 @@ if [[ -f /etc/environment ]] ; then
         environment_content=$(cat /etc/environment | cut -d '"' -f 2) &&
         printf "PATH=\"$environment_content:$MCP_DIR\"\n" > /etc/environment &&
         printf "Added: $MCP_DIR to /etc/environment. (backup created)\n" ||
-        printf "$red!! Could not add to PATH. !!\n"
+        printf "$red!! Could not add to PATH. !!$end\n"
     else
         printf "MCP already added to PATH.\n"
     fi
