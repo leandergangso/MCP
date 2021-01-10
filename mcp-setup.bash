@@ -5,13 +5,6 @@
 # as little humen intervention as possible.
 
 
-if [[ $UID != 0 ]]; then
-    echo "Please run this script with sudo:"
-    echo "sudo $0 $*"
-    exit 1
-fi
-
-
 # init variables
 MCP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 red=$'\e[1;31m'
@@ -24,22 +17,6 @@ case $yn in
     [Yy] ) ;;
     * ) printf 'Setup has been canceled.\n' && exit 0;;
 esac
-
-
-# add mcp folder to PATH
-if [[ -f /etc/environment ]] ; then
-    if ! grep -q "$MCP_DIR" /etc/environment; then
-        sudo cp /etc/environment /etc/environment.mcp_bak &&
-        environment_content=$(cat /etc/environment | cut -d '"' -f 2) &&
-        printf "PATH=\"$environment_content:$MCP_DIR\"\n" > /etc/environment &&
-        printf "Added: $MCP_DIR to /etc/environment. (backup created)\n" ||
-        printf "$red!! Could not add to PATH. !!$end\n"
-    else
-        printf "MCP already added to PATH.\n"
-    fi
-else
-    printf "$red!! The file 'environment' do not exist, STEP.1 has to be done MANUALLY. !!$end\n"
-fi
 
 
 # add username
@@ -89,7 +66,13 @@ else
 fi
 
 
-# save to FILE
+# add path to file
+if ! grep -q "export PATH=$PATH:$MCP_DIR" $FILE; then
+    printf "export PATH=$PATH:$MCP_DIR" >> $FILE
+fi
+
+
+# add github auth to FILE
 if ! grep -q "export GITHUB_USERNAME" $FILE; then
     printf "export GITHUB_USERNAME=\"$USERNAME\"\n" >> $FILE
 fi
