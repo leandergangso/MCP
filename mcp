@@ -203,13 +203,13 @@ mcp(){
 		# check for username input
 		if [[ $2 == '' ]] ; then
 			# check if repo exists
-			git ls-remote https://github.com/"$github_username"/"$name" || echo "No repo found with the name: $name." && exit 1
+			git ls-remote https://github.com/"$github_username"/"$name" || exit 1
 			# clone your own repos
 			[[ $git_https == true ]] && git clone https://github.com/"$github_username"/"$name".git && env_ready=true ||
 			git clone git@github.com:"$github_username"/"$name".git && env_ready=true
 		else
 			# check if repo exists
-			git ls-remote https://github.com/"$2"/"$name" || echo "No repo found with the name: $name." && exit 1
+			git ls-remote https://github.com/"$2"/"$name" || exit 1
 			# clone with reponame and username
 			[[ $git_https == true ]] && git clone https://github.com/"$2"/"$name".git && env_ready=true ||
 			git clone git@github.com:"$2"/"$name".git && env_ready=true
