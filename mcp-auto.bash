@@ -80,30 +80,30 @@ autols(){
 		echo "MCP_LS_LIMIT=20" >> "$MCP_PATH/default_values"
 		MCP_AUTO_LS=true
 		MCP_LS_LIMIT=20
-		exit 0
-	fi
-
-	if [[ $1 ]]; then
-		re='^[0-9]+$'
-		if [[ $1 =~ $re ]]; then
-			# set new limit nr
-			sed -i "s/MCP_LS_LIMIT=.*/MCP_LS_LIMIT=$1/" "$MCP_PATH/default_values"
-			MCP_LS_LIMIT=$1
-			echo 'limit updated to:' $MCP_LS_LIMIT
-		else
-			echo 'not valid, need a number'
-		fi
+		echo "autols is enabled (disabled when more than $MCP_LS_LIMIT itmes in dir)"
 	else
-		# toggle value
-		if [[ "$MCP_AUTO_LS" == false ]]; then
-			MCP_AUTO_LS=true
-			echo "autols is enabled (disabled when more than $MCP_LS_LIMIT itmes in dir)"
+		if [[ $1 ]]; then
+			re='^[0-9]+$'
+			if [[ $1 =~ $re ]]; then
+				# set new limit nr
+				sed -i "s/MCP_LS_LIMIT=.*/MCP_LS_LIMIT=$1/" "$MCP_PATH/default_values"
+				MCP_LS_LIMIT=$1
+				echo 'limit updated to:' $MCP_LS_LIMIT
+			else
+				echo 'not valid, need a number'
+			fi
 		else
-			MCP_AUTO_LS=false
-			echo 'autols is disabled'
+			# toggle value
+			if [[ "$MCP_AUTO_LS" == false ]]; then
+				MCP_AUTO_LS=true
+				echo "autols is enabled (disabled when more than $MCP_LS_LIMIT itmes in dir)"
+			else
+				MCP_AUTO_LS=false
+				echo 'autols is disabled'
+			fi
+			# edit file
+			sed -i "s/MCP_AUTO_LS=.*/MCP_AUTO_LS=$MCP_AUTO_LS/" "$MCP_PATH/default_values"
 		fi
-		# edit file
-		sed -i "s/MCP_AUTO_LS=.*/MCP_AUTO_LS=$MCP_AUTO_LS/" "$MCP_PATH/default_values"
 	fi
 }
 
