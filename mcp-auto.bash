@@ -67,7 +67,9 @@ activate(){
 		echo 'error, no environment found.'
 	else
 		# user error
-		echo 'error, env is already active.'
+		deactivate
+		activate
+		echo "Environment has been reloaded."
 	fi
 }
 
