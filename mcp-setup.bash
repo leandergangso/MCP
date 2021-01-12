@@ -93,7 +93,7 @@ fi
 
 # check if python3 and pip3 is installed
 type -P python3 >/dev/null 2>&1 || printf "$red!! You need to install python3: sudo apt install python3 !!$end\n"
-python3 -m venv >/dev/null 2>&1 || if [[ $? != 2 ]]; then printf "$red!! You need to install python3-venv: sudo apt install python3-venv !!$end\n" fi
+python3 -m venv >/dev/null 2>&1 || if [[ $? != 2 ]]; then printf "$red!! You need to install python3-venv: sudo apt install python3-venv !!$end\n"; fi
 type -P pip3 >/dev/null 2>&1 || printf "$red!! You need to install pip3: sudo apt install python3-pip !!$end\n"
 type -P pip3 >/dev/null 2>&1 && pip3 list | grep requests >/dev/null 2>&1 || printf "$red!! You need to install requests: pip3 install requests !!$end\n"
 
