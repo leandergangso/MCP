@@ -186,6 +186,8 @@ mcp(){
 			[[ $1 != '' ]] && createFolder && cd "$name"
 			# add git to folder
 			setupGit
+			# env can be setup
+			env_ready=true
 		else
 			# repo name already exist / error
 			exit 1
@@ -201,19 +203,17 @@ mcp(){
 		# check for username input
 		if [[ $2 == '' ]] ; then
 			# clone your own repos
-			[[ $git_https == true ]] && git clone https://github.com/"$github_username"/"$name".git ||
-			git clone git@github.com:"$github_username"/"$name".git
+			[[ $git_https == true ]] && git clone https://github.com/"$github_username"/"$name".git && env_ready=true ||
+			git clone git@github.com:"$github_username"/"$name".git && env_ready=true
 		else
 			# clone with reponame and username
-			[[ $git_https == true ]] && git clone https://github.com/"$2"/"$name".git ||
-			git clone git@github.com:"$2"/"$name".git
+			[[ $git_https == true ]] && git clone https://github.com/"$2"/"$name".git && env_ready=true ||
+			git clone git@github.com:"$2"/"$name".git && env_ready=true
 		fi
-		# done
-		exit 0
 	fi
 
 	# command: v (a)
-	if [[ $env_virtual == true ]] ; then
+	if [[ $env_virtual == true ]] && [[ $env_ready == true ]] ; then
 		# go to current dir 
 		cd "$path_current"
 		# check for new github project
