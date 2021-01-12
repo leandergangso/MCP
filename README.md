@@ -39,6 +39,7 @@ Tested on both Windows and Linux.
 - Optional: add `source mcp-auto.bash` to the config file that runs on terminal startup. (will allow for 'extra commands')
 - Python3 and pip3 needs to be installed
   - Type `pip3 install requests` in a terminal.
+  - Type `sudo apt install python3-venv` in a terminal.
 - Type: `mcp help` in a terminal for usage information.
 
 ## Extra commands (only works if you have setup mcp-auto.bash)
