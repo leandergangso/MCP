@@ -101,3 +101,4 @@ type -P pip3 >/dev/null 2>&1 && pip3 list | grep requests >/dev/null 2>&1 || pri
 # finish text + tips
 printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\n"
 
+exit 0
