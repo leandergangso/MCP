@@ -76,13 +76,10 @@ autols(){
 	if [[ ! -f "$MCP_PATH/default_values" ]]; then
 		echo "First time setup..."
 		echo "This file is used to keep track of you settings:" > "$MCP_PATH/default_values"
-		echo "MCP_AUTO_LS=false" >> "$MCP_PATH/default_values"
+		echo "MCP_AUTO_LS=true" >> "$MCP_PATH/default_values"
 		echo "MCP_LS_LIMIT=20" >> "$MCP_PATH/default_values"
-		MCP_AUTO_LS=false
+		MCP_AUTO_LS=true
 		MCP_LS_LIMIT=20
-	else
-		MCP_AUTO_LS=$(grep "MCP_AUTO_LS=.*" "$MCP_PATH/default_values" | cut -d '=' -f2)
-		MCP_LS_LIMIT=$(grep "MCP_LS_LIMIT=.*" "$MCP_PATH/default_values" | cut -d '=' -f2)
 	fi
 
 	if [[ $1 ]]; then
@@ -111,4 +108,5 @@ autols(){
 
 # file dir path
 MCP_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
+MCP_AUTO_LS=$(grep "MCP_AUTO_LS=.*" "$MCP_PATH/default_values" | cut -d '=' -f2)
+MCP_LS_LIMIT=$(grep "MCP_LS_LIMIT=.*" "$MCP_PATH/default_values" | cut -d '=' -f2)
