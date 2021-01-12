@@ -92,10 +92,12 @@ fi
 
 
 # check if python3 and pip3 is installed
-type -P python3 >/dev/null 2>&1 || printf "$red!! You need to install python3. !!$end\n"
-type -P pip3 >/dev/null 2>&1 || printf "$red!! You need to install pip3. !!$end\n"
+type -P python3 >/dev/null 2>&1 || printf "$red!! You need to install python3: sudo apt install python3 !!$end\n"
+type -P python3-venv >/dev/null 2>&1 || printf "$red!! You need to install python3-venv: sudo apt install python3-venv !!$end\n"
+type -P pip3 >/dev/null 2>&1 || printf "$red!! You need to install pip3: sudo apt install python3-pip !!$end\n"
+type -P pip3 >/dev/null 2>&1 && pip3 list | grep requests >/dev/null 2>&1 || printf "$red!! You need to install requests: pip3 install requests !!$end\n"
 
 
 # finish text + tips
-printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\n\nNote: Do run \"pip3 install requests\" if you dont already have done so!\n"
+printf "\nSetup finished.\n\nPlease fix any errors(in$red red$end) that may have occured!\n"
 
