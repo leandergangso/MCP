@@ -80,6 +80,7 @@ autols(){
 		echo "MCP_LS_LIMIT=20" >> "$MCP_PATH/default_values"
 		MCP_AUTO_LS=true
 		MCP_LS_LIMIT=20
+		exit 0
 	fi
 
 	if [[ $1 ]]; then
