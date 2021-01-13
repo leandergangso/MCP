@@ -21,12 +21,7 @@ cd() {
 	
 	# if virtual_env string length is zero (not activated)
 	if [[ -z "$VIRTUAL_ENV" ]]; then
-		# if no arguments are given
-		[[ $@ == '' ]] && return
-		# if im going back
-		[[ $@ == '..' ]] && return
-		
-		## activate when going INTO a folder with venv
+		## activate when going INTO a folder with .env & autoenv
 		if [[ -a "$PWD/.env/Scripts/autoenv" ]]; then
 			source "$PWD/.env/Scripts/activate"
 			autoenv_path="$PWD"
@@ -56,17 +51,14 @@ activate(){
 					source "$folder/.env/bin/activate"
 				fi
 				autoenv_path="$folder"
-				# quit
 				return
 			else
 				# backtrack - remove last /*
 				local folder="$(echo "$folder" | sed 's|\(.*\)/.*|\1|')"
 			fi
 		done
-		# user error
 		echo 'error, no environment found.'
 	else
-		# user error
 		deactivate
 		activate
 		echo "Environment has been reloaded."
