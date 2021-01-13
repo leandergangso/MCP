@@ -27,7 +27,7 @@ mcp(){
 	git_https=false
 	path_current="$PWD"
 	env_autoenv=true
-	env_name='.env'	
+	env_name='.env'	# should not be changed!
 
 	#-----------#
 	# USER HELP #
