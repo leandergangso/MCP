@@ -45,6 +45,7 @@ Tested on both Windows and Linux.
 ## Extra commands (only works if you have setup mcp-auto.bash)
 
 - `activate` mcp will try to activate the closest environment.
+- `cd.. <nr>` go back \<nr\> times, instead of `cd ../../..`
 - `autols` will toggle the `ls` command to automaticlly run after every `cd` command.
   - is disabled by default.
   - if directory contains more than 20 items, `ls` will not run.
