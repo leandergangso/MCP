@@ -34,6 +34,12 @@ cd() {
 	fi
 }
 
+# goes back multiple dir's. (usage: cd.. 3)
+cd_up() {
+	cd $(printf "%0.s../" $(seq 1 $1 ));
+}
+alias 'cd..'='cd_up'
+
 # will activate .env if found
 activate(){
 	# virtual env is not active 
