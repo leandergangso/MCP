@@ -112,7 +112,7 @@ mcp(){
 			a) env_autoenv=false
 			;;
 			# clone repo
-			c) git_clone=true; group_git=true
+			c) git_clone=true
 			;;
 			# add description
 			d) git_desc="$OPTARG"; group_ext=true
@@ -194,7 +194,7 @@ mcp(){
 		fi
 	fi
 
-	# command: c (h,v(a))
+	# command: c (h)
 	if [[ $git_clone == true ]] ; then
 		# go to current folder
 		cd "$path_current"
@@ -202,17 +202,13 @@ mcp(){
 		[[ -a '.git' ]] && echo "error, '.git' is already in this folder." && exit 1
 		# check for username input
 		if [[ $2 == '' ]] ; then
-			# check if repo exists
-			git ls-remote https://github.com/"$github_username"/"$name" || exit 1
 			# clone your own repos
-			[[ $git_https == true ]] && git clone https://github.com/"$github_username"/"$name".git && env_ready=true ||
-			git clone git@github.com:"$github_username"/"$name".git && env_ready=true
+			[[ $git_https == true ]] && git clone https://github.com/"$github_username"/"$name".git ||
+			git clone git@github.com:"$github_username"/"$name".git
 		else
-			# check if repo exists
-			git ls-remote https://github.com/"$2"/"$name" || exit 1
 			# clone with reponame and username
-			[[ $git_https == true ]] && git clone https://github.com/"$2"/"$name".git && env_ready=true ||
-			git clone git@github.com:"$2"/"$name".git && env_ready=true
+			[[ $git_https == true ]] && git clone https://github.com/"$2"/"$name".git ||
+			git clone git@github.com:"$2"/"$name".git
 		fi
 	fi
 
@@ -638,9 +634,16 @@ optionHandeling(){
 	# Operation not permitted
 	exit 1
 
-	# cant use -g and -c at the same time
+	# can't use -g and -c at the same time
 	[[ $git_create == true && $git_clone == true ]] &&
 	echo "error, can't use both -g and -c" &&
+	echo "$usage" &&
+	# Operation not permitted
+	exit 1
+
+	# can't use -c and -v at the same time
+	[[ $git_clone == true && $env_virtual == true ]] &&
+	echo "error, can't use both -c and -v" &&
 	echo "$usage" &&
 	# Operation not permitted
 	exit 1
