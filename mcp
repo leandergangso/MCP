@@ -213,7 +213,7 @@ mcp(){
 	fi
 
 	# command: v (a)
-	if [[ $env_virtual == true ]] && [[ $env_ready == true ]] ; then
+	if [[ $env_virtual == true ]]; then
 		# go to current dir 
 		cd "$path_current"
 		# check for new github project
